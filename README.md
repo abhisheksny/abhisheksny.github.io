@@ -1,14 +1,13 @@
 # Abhishek Kumar
 
-**Biotechnology · Bioinformatics · Computational Biology**
+**Biotechnology · Immunoinformatics · Computational Biology**
 
-Personal research website and portfolio of **Abhishek Kumar**, focused on bioinformatics, computational biology, structural bioinformatics, and scientific programming.
+Personal research website and portfolio of **Abhishek Kumar**, focused on computational biology, structural bioinformatics, and scientific programming.
 
 🌐 **Website:** [abhisheksny.github.io](https://abhisheksny.github.io)
 
 ## Research Interests
 
-* Bioinformatics
 * Computational Biology
 * Structural Bioinformatics
 * Host–Pathogen Biology
@@ -49,11 +48,10 @@ Computational structural-biology workflows involving molecular docking, GROMACS 
 
 ## Academic Profiles
 
-* **GitHub:** [@abhisheksny](https://github.com/abhisheksny)
 * **ORCID:** [0009-0000-2206-0993](https://orcid.org/0009-0000-2206-0993)
 
 
 ---
 
-This repository contains the source files for my personal research website, hosted using GitHub Pages.
+This repository contains the source files for my personal website, hosted using GitHub Pages.
 
