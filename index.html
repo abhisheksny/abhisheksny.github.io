@@ -1,10 +1,16 @@
+
+If that is really inside GitHub, **delete it**.
+
+### Don't patch this piece-by-piece. Replace the entire `index.html` with this clean version:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="Abhishek Kumar — Biotechnology and Computational Biology.">
+  <meta name="description" content="Abhishek Kumar — Biotechnology, Bioinformatics and Computational Biology.">
   <meta name="author" content="Abhishek Kumar">
 
   <title>Abhishek Kumar | Bioinformatics & Computational Biology</title>
@@ -12,7 +18,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body id="top">
 
   <!-- =========================
        HEADER
@@ -22,7 +28,7 @@
 
     <nav class="nav">
 
-      <a class="logo" href="#">AK</a>
+      <a class="logo" href="#top">AK</a>
 
       <div class="links">
         <a href="#about">About</a>
@@ -34,7 +40,6 @@
 
     </nav>
 
-
     <div class="hero-content">
 
       <p class="eyebrow">
@@ -44,10 +49,10 @@
       <h1>Abhishek Kumar</h1>
 
       <p class="intro">
-        Biotechnology student working at the intersection of bioinformatics,
-        and experimental research. Interested in using
-        computational methods to investigate biological systems and develop
-        reproducible research workflows.
+        Biotechnology student working at the intersection of bioinformatics
+        and experimental research. Interested in using computational methods
+        to investigate biological systems and develop reproducible research
+        workflows.
       </p>
 
       <div class="buttons">
@@ -75,34 +80,71 @@
   </header>
 
 
-
   <main>
 
 
-<div class="facts">
+    <!-- =========================
+         ABOUT
+    ========================== -->
 
-  <div class="fact">
-    <span>Current</span>
-    <strong>M.Sc. Biotechnology</strong>
-  </div>
+    <section id="about">
 
-  <div class="fact">
-    <span>Research affiliation</span>
-    <strong>ICMR-RM NIHR, Patna, India</strong>
-  </div>
+      <div class="section-heading">
+        <span>01</span>
+        <h2>About</h2>
+      </div>
 
-  <div class="fact">
-    <span>Primary direction</span>
-    <strong>Immunoinformatics & Computational Biology</strong>
-  </div>
+      <div class="about-grid">
 
-  <div class="fact">
-    <span>Location</span>
-    <strong>India</strong>
-  </div>
+        <div>
 
-</div>
+          <p>
+            I am a biotechnology student developing experience across
+            experimental biology, bioinformatics and computational research.
+          </p>
 
+          <p>
+            My interests include biological data analysis, structural
+            bioinformatics, molecular simulation, immunoinformatics and
+            computational approaches to host–pathogen research.
+          </p>
+
+          <p>
+            I am particularly interested in building reproducible
+            computational workflows and scientific tools using Python,
+            Linux and open-source bioinformatics software.
+          </p>
+
+        </div>
+
+
+        <div class="facts">
+
+          <div class="fact">
+            <span>Current</span>
+            <strong>M.Sc. Biotechnology</strong>
+          </div>
+
+          <div class="fact">
+            <span>Research affiliation</span>
+            <strong>ICMR-RM NIHR, Patna, India</strong>
+          </div>
+
+          <div class="fact">
+            <span>Primary direction</span>
+            <strong>Immunoinformatics & Computational Biology</strong>
+          </div>
+
+          <div class="fact">
+            <span>Location</span>
+            <strong>India</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
 
 
     <!-- =========================
@@ -116,9 +158,9 @@
         <h2>Research interests</h2>
       </div>
 
-
       <div class="tag-grid">
 
+        <div>Bioinformatics</div>
 
         <div>Computational Biology</div>
 
@@ -139,7 +181,6 @@
     </section>
 
 
-
     <!-- =========================
          PROJECTS
     ========================== -->
@@ -151,11 +192,8 @@
         <h2>Selected projects</h2>
       </div>
 
-
       <div class="project-grid">
 
-
-        <!-- Project 1 -->
 
         <article class="card">
 
@@ -180,9 +218,6 @@
         </article>
 
 
-
-        <!-- Project 2 -->
-
         <article class="card">
 
           <p class="number">02</p>
@@ -202,9 +237,6 @@
         </article>
 
 
-
-        <!-- Project 3 -->
-
         <article class="card">
 
           <p class="number">03</p>
@@ -222,9 +254,6 @@
 
         </article>
 
-
-
-        <!-- Project 4 -->
 
         <article class="card">
 
@@ -250,104 +279,87 @@
     </section>
 
 
+    <!-- =========================
+         PUBLICATIONS
+    ========================== -->
 
-<!-- =========================
-     PUBLICATIONS
-========================== -->
+    <section id="publications">
 
-<section id="publications">
+      <div class="section-heading">
+        <span>04</span>
+        <h2>Publications</h2>
+      </div>
 
-  <div class="section-heading">
-    <span>04</span>
-    <h2>Publications</h2>
-  </div>
+      <div class="empty-card">
 
-  <div class="empty-card">
+        <p class="number">01</p>
 
-    <p class="number">01</p>
+        <h3>
+          Neem derivatives in integrated control of vectors and pathogens of
+          leishmaniasis: Current knowledge and computational insights for
+          future perspectives
+        </h3>
 
-    <h3>
-      Neem derivatives in integrated control of vectors and pathogens of
-      leishmaniasis: Current knowledge and computational insights for
-      future perspectives
-    </h3>
+        <p>
+          Singh PN, <strong>Kumar A*</strong>, Kumari S, Bhat AH, Alti D.
+        </p>
 
-    <p>
-      Singh PN, <strong>Kumar A*</strong>, Kumari S, Bhat AH, Alti D.
-    </p>
+        <p>
+          <em>Asian Pacific Journal of Tropical Biomedicine</em> · 2026
+        </p>
 
-    <p>
-      <em>Asian Pacific Journal of Tropical Biomedicine</em> · 2026
-    </p>
+        <p class="status">
+          * Joint first author
+        </p>
 
-    <p class="status">
-      * Joint first author
-    </p>
+      </div>
 
-  </div>
-
-</section>
-
+    </section>
 
 
     <!-- =========================
          LINKS
     ========================== -->
 
-   <section id="links">
+    <section id="links">
 
-  <div class="section-heading">
-    <span>05</span>
-    <h2>Links</h2>
-  </div>
+      <div class="section-heading">
+        <span>05</span>
+        <h2>Links</h2>
+      </div>
 
-  <div class="link-grid">
-
-    <a
-      href="https://github.com/abhisheksny"
-      target="_blank"
-      rel="noopener"
-    >
-      <span>GitHub</span>
-      <small>@abhisheksny</small>
-    </a>
-
-    <a
-      href="https://orcid.org/0009-0000-2206-0993"
-      target="_blank"
-      rel="noopener"
-    >
-      <span>ORCID</span>
-      <small>0009-0000-2206-0993</small>
-    </a>
-
-    <a
-      href="YOUR-LINKEDIN-URL"
-      target="_blank"
-      rel="noopener"
-    >
-      <span>LinkedIn</span>
-      <small>@abhisheksny</small>
-    </a>
-
-  </div>
-
-</section>
+      <div class="link-grid">
 
 
-        <!-- ResearchGate -->
+        <a
+          href="https://github.com/abhisheksny"
+          target="_blank"
+          rel="noopener"
+        >
+          <span>GitHub</span>
+          <small>@abhisheksny</small>
+        </a>
+
+
+        <a
+          href="https://orcid.org/0009-0000-2206-0993"
+          target="_blank"
+          rel="noopener"
+        >
+          <span>ORCID</span>
+          <small>0009-0000-2206-0993</small>
+        </a>
+
+
+        <!-- Replace the # with your actual LinkedIn URL -->
 
         <a
           href="#"
-          title="ResearchGate profile will be added later"
+          target="_blank"
+          rel="noopener"
         >
-
-          <span>ResearchGate</span>
-
-          <small>
-          Removed by author
-          </small>
-
+          <span>LinkedIn</span>
+          <small>Professional profile</small>
         </a>
 
 
@@ -359,24 +371,43 @@
   </main>
 
 
-
   <!-- =========================
        FOOTER
   ========================== -->
 
   <footer>
 
-    <p>
-      © 2026 Abhishek Kumar
-    </p>
+    <div>
+      <p>© 2026 Abhishek Kumar</p>
+      <p>Biotechnology · Bioinformatics · Computational Biology</p>
+    </div>
 
-    <p>
-      Built with GitHub Pages.
-    </p>
+    <div class="footer-links">
+
+      <a
+        href="https://github.com/abhisheksny"
+        target="_blank"
+        rel="noopener"
+      >
+        GitHub
+      </a>
+
+      <a
+        href="https://orcid.org/0009-0000-2206-0993"
+        target="_blank"
+        rel="noopener"
+      >
+        ORCID
+      </a>
+
+      <a href="#top">
+        Back to top ↑
+      </a>
+
+    </div>
 
   </footer>
 
 
 </body>
 </html>
-```
