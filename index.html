@@ -17,7 +17,10 @@
   <header class="hero">
 
     <nav class="nav" aria-label="Primary navigation">
-      <a class="logo" href="#top" aria-label="Abhishek Kumar home">AK</a>
+
+      <a class="logo" href="#top" aria-label="Abhishek Kumar home">
+        AK
+      </a>
 
       <div class="links">
         <a href="#about">About</a>
@@ -27,11 +30,18 @@
         <a href="#links">Links</a>
       </div>
 
-      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+      <button
+        class="theme-toggle"
+        type="button"
+        aria-label="Switch to dark mode"
+        aria-pressed="false"
+      >
         <span class="theme-icon" aria-hidden="true">☾</span>
         <span class="theme-label">Dark</span>
       </button>
+
     </nav>
+
 
     <div class="hero-content">
 
@@ -82,10 +92,10 @@
       <div class="about-grid">
 
         <div>
-          
+
           <p>
             My interests include biological data analysis, structural
-            bioinformatics, molecular simulation, immunoinformatics 
+            bioinformatics, molecular simulation, immunoinformatics
             approaches to host–pathogen research.
           </p>
 
@@ -105,12 +115,10 @@
             <strong>M.Sc. Biotechnology</strong>
           </div>
 
-
           <div class="fact">
             <span>Primary direction</span>
             <strong>Biotechnology & Computational Biology</strong>
           </div>
-
 
         </div>
 
@@ -232,6 +240,7 @@
       </div>
 
       <article class="publication-card">
+
         <div class="publication-topline">
           <span class="publication-type">Review article</span>
           <span class="publication-year">2026</span>
@@ -253,15 +262,27 @@
         </p>
 
         <div class="publication-actions">
-          <a class="button primary" href="https://doi.org/10.4103/apjtb.apjtb_383_26"
-             target="_blank" rel="noopener noreferrer">
+
+          <a
+            class="button primary"
+            href="https://doi.org/10.4103/apjtb.apjtb_383_26"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Read article ↗
           </a>
-          <a class="text-link" href="https://doi.org/10.4103/apjtb.apjtb_383_26"
-             target="_blank" rel="noopener noreferrer">
+
+          <a
+            class="text-link"
+            href="https://doi.org/10.4103/apjtb.apjtb_383_26"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             DOI: 10.4103/apjtb.apjtb_383_26
           </a>
+
         </div>
+
       </article>
 
     </section>
@@ -314,40 +335,122 @@
   </main>
 
 
- <footer>
+  <footer>
 
-  <div>
-    <p>© 2026 abhisheksny</p>
-  </div>
+    <div>
+      <p>© 2026 abhisheksny</p>
+    </div>
 
-  <div class="footer-links">
+    <div class="footer-links">
 
-    <a
-      href="mailto:abhishek.genome@gmail.com"
-    >
-      Email
-    </a>
+      <a href="mailto:abhishek.genome@gmail.com">
+        Email
+      </a>
 
-    <a
-      href="https://github.com/abhisheksny"
-      target="_blank"
-      rel="noopener"
-    >
-      GitHub
-    </a>
+      <a
+        href="https://github.com/abhisheksny"
+        target="_blank"
+        rel="noopener"
+      >
+        GitHub
+      </a>
 
-    <a
-      href="https://orcid.org/0009-0000-2206-0993"
-      target="_blank"
-      rel="noopener"
-    >
-      ORCID
-    </a>
+      <a
+        href="https://orcid.org/0009-0000-2206-0993"
+        target="_blank"
+        rel="noopener"
+      >
+        ORCID
+      </a>
 
-    <a href="#top">
-      Back to top ↑
-    </a>
+      <a href="#top">
+        Back to top ↑
+      </a>
 
-  </div>
+    </div>
 
-</footer>
+  </footer>
+
+
+  <!-- DARK MODE -->
+
+  <script>
+
+    const themeToggle = document.querySelector(".theme-toggle");
+    const themeIcon = document.querySelector(".theme-icon");
+    const themeLabel = document.querySelector(".theme-label");
+
+    const savedTheme = localStorage.getItem("theme");
+
+    function setTheme(theme) {
+
+      if (theme === "dark") {
+
+        document.documentElement.setAttribute("data-theme", "dark");
+
+        themeIcon.textContent = "☀";
+        themeLabel.textContent = "Light";
+
+        themeToggle.setAttribute(
+          "aria-label",
+          "Switch to light mode"
+        );
+
+        themeToggle.setAttribute(
+          "aria-pressed",
+          "true"
+        );
+
+      } else {
+
+        document.documentElement.removeAttribute("data-theme");
+
+        themeIcon.textContent = "☾";
+        themeLabel.textContent = "Dark";
+
+        themeToggle.setAttribute(
+          "aria-label",
+          "Switch to dark mode"
+        );
+
+        themeToggle.setAttribute(
+          "aria-pressed",
+          "false"
+        );
+
+      }
+
+    }
+
+
+    if (savedTheme === "dark") {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+
+
+    themeToggle.addEventListener("click", () => {
+
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme");
+
+      if (currentTheme === "dark") {
+
+        setTheme("light");
+        localStorage.setItem("theme", "light");
+
+      } else {
+
+        setTheme("dark");
+        localStorage.setItem("theme", "dark");
+
+      }
+
+    });
+
+  </script>
+
+
+</body>
+</html>
