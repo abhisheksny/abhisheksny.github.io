@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Abhishek Kumar — Biotechnology researcher working in computational biology, structural bioinformatics, immunoinformatics and host–pathogen research.">
   <meta name="author" content="Abhishek Kumar">
+  <meta name="theme-color" content="#02040a">
   <title>Abhishek Kumar | Bioinformatics & Computational Biology</title>
   <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  } }
+  </script>
 </head>
 
 <body id="top">
 
   <header class="hero">
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="cursor-field" aria-hidden="true"></div>
+
     <nav class="nav" aria-label="Primary navigation">
       <a class="logo" href="#top" aria-label="Abhishek Kumar home">AK</a>
       <div class="links">
-        <a href="#about">About</a>
-        <a href="#research">Research</a>
-        <a href="#projects">Projects</a>
-        <a href="#publications">Publications</a>
-        <a href="#links">Links</a>
+        <a href="#about">// About</a>
+        <a href="#research">// Research</a>
+        <a href="#projects">// Projects</a>
+        <a href="#publications">// Publications</a>
+        <a href="mailto:abhishek.genome@gmail.com">// Contact</a>
       </div>
       <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="true">
         <span class="theme-icon" aria-hidden="true">☀</span>
@@ -27,30 +38,29 @@
       </button>
     </nav>
 
-    <div class="hero-grid">
-      <div class="hero-content">
-        <p class="eyebrow">BIOTECHNOLOGY · COMPUTATIONAL BIOLOGY</p>
-        <h1>Abhishek <span class="glow">Kumar</span></h1>
-        <p class="intro">
-          Biotechnology researcher working at the intersection of computational biology, structural bioinformatics, immunoinformatics and host–pathogen research.
-        </p>
-        <div class="buttons">
-          <a class="button primary" href="https://github.com/abhisheksny" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a class="button secondary" href="#publications">View publication</a>
-        </div>
-      </div>
+    <div class="hud" aria-hidden="true">
+      <span style="left:39%;top:24%;--d:1.2s">Genomic data analysis</span>
+      <span style="left:79%;top:30%;--d:1.5s">Structural bioinformatics</span>
+      <span style="left:41%;top:47%;--d:1.8s">Host–pathogen biology</span>
+      <span style="left:81%;top:56%;--d:2.1s">Immunoinformatics</span>
+      <span style="left:39%;top:69%;--d:2.4s">Molecular dynamics</span>
+      <span style="left:77%;top:78%;--d:2.7s">NGS / Omics</span>
+    </div>
 
-      <aside class="core" aria-label="Bioinformatics core status (decorative)">
-        <div class="core-bar">
-          <span class="dot"></span>
-          <span>BIOINFORMATICS CORE</span>
-          <span class="core-state">ONLINE</span>
-        </div>
-        <div class="core-body">
-          <div class="helix" aria-hidden="true"></div>
-          <ul class="log" aria-live="off"></ul>
-        </div>
-      </aside>
+    <div class="hero-content">
+      <p class="eyebrow">BIOTECHNOLOGY × COMPUTATIONAL BIOLOGY</p>
+      <h1>Abhishek<br>Kumar</h1>
+      <p class="intro">Biotechnology researcher working at the intersection of computational biology, structural bioinformatics, immunoinformatics and host–pathogen research.</p>
+      <div class="buttons">
+        <a class="button primary" href="https://github.com/abhisheksny" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="button secondary" href="#publications">Publications</a>
+      </div>
+    </div>
+
+    <div class="status" aria-hidden="true">
+      <span><i></i>Bioinformatics core // online</span>
+      <span class="status-mid">Datastream // active</span>
+      <span>Python // Linux · <b id="hud-count">—</b> particles</span>
     </div>
   </header>
 
@@ -86,35 +96,30 @@
     <section id="projects" class="reveal">
       <div class="section-heading"><h2>Selected projects</h2></div>
       <div class="project-grid">
-
         <article class="card">
           <p class="number">01</p>
           <h3>FASTA Toolkit</h3>
           <p>A Python and Biopython-based toolkit for sequence analysis, including FASTA statistics, ORF identification, protein translation and related sequence-analysis workflows.</p>
           <a href="https://github.com/abhisheksny/bio_project" target="_blank" rel="noopener">View on GitHub →</a>
         </article>
-
         <article class="card">
           <p class="number">02</p>
           <h3>FACS Data Analysis</h3>
           <p>Python-based workflows for reading FCS files, generating flow-cytometry plots and extracting analytical metrics from experimental data.</p>
-          <span class="status">Research workflow</span>
+          <span class="status-pill">Research workflow</span>
         </article>
-
         <article class="card">
           <p class="number">03</p>
           <h3>qPCR Data Analysis</h3>
           <p>Analysis of HPV qPCR data involving quality control, Ct-based interpretation, classification and summary statistics.</p>
-          <span class="status">Experimental data analysis</span>
+          <span class="status-pill">Experimental data analysis</span>
         </article>
-
         <article class="card">
           <p class="number">04</p>
           <h3>Protein–Ligand Simulation</h3>
           <p>Computational structural-biology workflows involving molecular docking, molecular dynamics simulations with GROMACS and trajectory analysis.</p>
-          <span class="status">Computational research</span>
+          <span class="status-pill">Computational research</span>
         </article>
-
       </div>
     </section>
 
@@ -156,90 +161,6 @@
     </div>
   </footer>
 
-  <script>
-    const root = document.documentElement;
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    /* ---------- Theme (default dark) ---------- */
-    const toggle = document.querySelector(".theme-toggle");
-    const icon = document.querySelector(".theme-icon");
-    const label = document.querySelector(".theme-label");
-    const store = {
-      get() { try { return localStorage.getItem("theme"); } catch { return null; } },
-      set(v) { try { localStorage.setItem("theme", v); } catch {} }
-    };
-    function setTheme(t) {
-      const dark = t === "dark";
-      dark ? root.setAttribute("data-theme", "dark") : root.removeAttribute("data-theme");
-      icon.textContent = dark ? "☀" : "☾";
-      label.textContent = dark ? "Light" : "Dark";
-      toggle.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-      toggle.setAttribute("aria-pressed", String(dark));
-    }
-    setTheme(store.get() === "light" ? "light" : "dark");
-    toggle.addEventListener("click", () => {
-      const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      setTheme(next); store.set(next);
-    });
-
-    /* ---------- DNA helix (CSS-animated rungs) ---------- */
-    const helix = document.querySelector(".helix");
-    for (let i = 0; i < 16; i++) {
-      const r = document.createElement("i");
-      r.style.setProperty("--i", i);
-      r.innerHTML = "<b></b><u></u><b></b>";
-      helix.appendChild(r);
-    }
-
-    /* ---------- Core log (typed lines) ---------- */
-    const lines = [
-      "init workspace · python / linux",
-      "load module · structural_bioinformatics",
-      "load module · molecular_dynamics (GROMACS)",
-      "load module · immunoinformatics",
-      "load module · omics_ngs_analysis",
-      "workflows · reproducible, open-source",
-      "status · ready for collaboration"
-    ];
-    const log = document.querySelector(".log");
-    function addLine(text, typed) {
-      const li = document.createElement("li");
-      log.appendChild(li);
-      if (log.children.length > 6) log.firstElementChild.remove();
-      if (!typed) { li.textContent = text; return Promise.resolve(); }
-      return new Promise(res => {
-        let n = 0;
-        const t = setInterval(() => {
-          li.textContent = text.slice(0, ++n);
-          if (n >= text.length) { clearInterval(t); res(); }
-        }, 22);
-      });
-    }
-    (async () => {
-      if (reduce) {
-        lines.slice(-6).forEach(l => addLine(l, false));
-        document.querySelector(".core-state").classList.add("live");
-        return;
-      }
-      for (const l of lines) { await addLine(l, true); await new Promise(r => setTimeout(r, 380)); }
-      document.querySelector(".core-state").classList.add("live");
-    })();
-
-    /* ---------- Scroll reveal ---------- */
-    const io = new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-    }), { threshold: 0.12 });
-    document.querySelectorAll(".reveal").forEach(el => reduce ? el.classList.add("in") : io.observe(el));
-
-    /* ---------- Card spotlight ---------- */
-    document.querySelectorAll(".card, .link-grid a").forEach(el => {
-      el.addEventListener("pointermove", e => {
-        const b = el.getBoundingClientRect();
-        el.style.setProperty("--mx", (e.clientX - b.left) + "px");
-        el.style.setProperty("--my", (e.clientY - b.top) + "px");
-      });
-    });
-  </script>
-
+  <script type="module" src="script.js"></script>
 </body>
 </html>
