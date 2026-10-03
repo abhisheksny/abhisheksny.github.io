@@ -216,7 +216,11 @@
       });
     }
     (async () => {
-      if (reduce) { lines.slice(-6).forEach(l => addLine(l, false)); return; }
+      if (reduce) {
+        lines.slice(-6).forEach(l => addLine(l, false));
+        document.querySelector(".core-state").classList.add("live");
+        return;
+      }
       for (const l of lines) { await addLine(l, true); await new Promise(r => setTimeout(r, 380)); }
       document.querySelector(".core-state").classList.add("live");
     })();
