@@ -1,456 +1,1273 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="Abhishek Kumar — Biotechnology researcher working in computational biology, structural bioinformatics, immunoinformatics and host–pathogen research.">
-  <meta name="author" content="Abhishek Kumar">
+    <meta name="description"
+        content="Abhishek Kumar — Biotechnology Researcher and Computational Biology portfolio.">
 
-  <title>Abhishek Kumar | Bioinformatics & Computational Biology</title>
+    <meta name="author" content="Abhishek Kumar">
 
-  <link rel="stylesheet" href="style.css">
+    <title>Abhishek Kumar | Bioinformatics HUD Core</title>
+
+    <link rel="stylesheet" href="index.css">
 </head>
 
-<body id="top">
+<body>
 
-  <header class="hero">
+    <!-- =========================================================
+         BACKGROUND EFFECTS
+    ========================================================== -->
 
-    <nav class="nav" aria-label="Primary navigation">
-
-      <a class="logo" href="#top" aria-label="Abhishek Kumar home">
-        AK
-      </a>
-
-      <div class="links">
-        <a href="#about">About</a>
-        <a href="#research">Research</a>
-        <a href="#projects">Projects</a>
-        <a href="#publications">Publications</a>
-        <a href="#links">Links</a>
-      </div>
-
-      <button
-        class="theme-toggle"
-        type="button"
-        aria-label="Switch to dark mode"
-        aria-pressed="false"
-      >
-        <span class="theme-icon" aria-hidden="true">☾</span>
-        <span class="theme-label">Dark</span>
-      </button>
-
-    </nav>
+    <div class="background-grid"></div>
+    <div class="scanlines"></div>
+    <div class="cursor-glow"></div>
 
 
-    <div class="hero-content">
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
 
-      <p class="eyebrow">
-        BIOTECHNOLOGY · COMPUTATIONAL BIOLOGY
-      </p>
+    <header class="hero">
 
-      <h1>Abhishek Kumar</h1>
+        <nav class="nav">
 
-      <p class="intro">
-        Biotechnology researcher working at the intersection of computational biology, structural bioinformatics, immunoinformatics and host–pathogen research.
-      </p>
+            <div class="logo">
+                AK
+            </div>
 
-      <div class="buttons">
+            <div class="links">
+                <a href="#about">// ABOUT</a>
+                <a href="#research">// RESEARCH</a>
+                <a href="#projects">// PROJECTS</a>
+                <a href="#publications">// PUBLICATIONS</a>
+            </div>
 
-        <a
-          class="button primary"
-          href="https://github.com/abhisheksny"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-        </a>
+            <button class="theme-toggle" id="coreToggle">
+                <span class="pulse-dot"></span>
+                <span id="coreStatus">SECURE_CORE: ON</span>
+            </button>
 
-        <a
-          class="button secondary"
-          href="#publications"
-        >
-          View publication
-        </a>
-
-      </div>
-
-    </div>
-
-  </header>
+        </nav>
 
 
-  <main>
+        <div class="hero-layout">
+
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    BIOTECHNOLOGY · COMPUTATIONAL BIOLOGY
+                </div>
+
+                <div class="system-label">
+                    <span class="status-indicator"></span>
+                    RESEARCHER_NODE // ONLINE
+                </div>
+
+                <h1>
+                    Abhishek
+                    <span>Kumar</span>
+                </h1>
+
+                <p class="intro">
+                    Biotechnology researcher working at the intersection of
+                    computational biology, structural bioinformatics,
+                    immunoinformatics and host–pathogen research.
+                </p>
+
+                <div class="buttons">
+
+                    <a href="https://github.com/abhisheksny"
+                       class="button primary"
+                       target="_blank"
+                       rel="noopener noreferrer">
+
+                        INITIALIZE_GITHUB_LINK
+
+                    </a>
+
+                    <a href="#publications"
+                       class="button secondary">
+
+                        VIEW_PUBLICATIONS
+
+                    </a>
+
+                </div>
+
+            </div>
 
 
-    <section id="about">
+            <!-- HERO HUD -->
+            <div class="hero-hud">
 
-      <div class="section-heading">
-        <h2>About</h2>
-      </div>
+                <div class="hud-circle">
 
-      <div class="about-grid">
+                    <div class="hud-circle-inner">
+
+                        <div class="hud-core">
+                            AK
+                        </div>
+
+                    </div>
+
+                    <div class="orbit orbit-1"></div>
+                    <div class="orbit orbit-2"></div>
+                    <div class="orbit orbit-3"></div>
+
+                </div>
+
+                <div class="hud-data data-1">
+                    <span>NODE</span>
+                    <strong>AK_001</strong>
+                </div>
+
+                <div class="hud-data data-2">
+                    <span>STATUS</span>
+                    <strong>ACTIVE</strong>
+                </div>
+
+                <div class="hud-data data-3">
+                    <span>FIELD</span>
+                    <strong>BIOINFO</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-meta">
+
+            <span>
+                ENV_SYS:
+                <strong>LIVE</strong>
+            </span>
+
+            <span>
+                SECTOR:
+                <strong>INDIA</strong>
+            </span>
+
+            <span>
+                COMPILER:
+                <strong>PYTHON // LINUX</strong>
+            </span>
+
+            <span>
+                NODE:
+                <strong>RESEARCHER_01</strong>
+            </span>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <main>
+
+
+        <!-- =====================================================
+             JARVIS CORE
+        ====================================================== -->
+
+        <section class="jarvis-core-analytics hud-clip">
+
+            <div class="core-header">
+
+                <div class="core-title">
+
+                    <div class="pulse-dot"></div>
+
+                    <span>
+                        A.I. BIOINFORMATICS CORE //
+                        AGENT_JARVIS_ACTIVE
+                    </span>
+
+                </div>
+
+                <div class="live-time"
+                     id="live-timestamp">
+
+                    SYS_TIME: SYNCING...
+
+                </div>
+
+            </div>
+
+
+            <div class="jarvis-split-layout">
+
+
+                <!-- HOLOGRAM -->
+
+                <div class="hologram-viewport">
+
+                    <div class="holo-emitter"></div>
+
+                    <div class="holo-ring outer-layer"></div>
+
+                    <div class="holo-ring mid-layer"></div>
+
+                    <div class="holo-ring inner-layer"></div>
+
+
+                    <!-- DNA -->
+
+                    <div class="dna-helix-simulation">
+
+                        <div class="helix-strand" style="--i:1;"></div>
+                        <div class="helix-strand" style="--i:2;"></div>
+                        <div class="helix-strand" style="--i:3;"></div>
+                        <div class="helix-strand" style="--i:4;"></div>
+                        <div class="helix-strand" style="--i:5;"></div>
+                        <div class="helix-strand" style="--i:6;"></div>
+                        <div class="helix-strand" style="--i:7;"></div>
+                        <div class="helix-strand" style="--i:8;"></div>
+
+                    </div>
+
+
+                    <div class="holo-readout">
+                        DATASTREAM: COMPILING
+                    </div>
+
+                    <div class="holo-label label-top">
+                        DNA // MATRIX
+                    </div>
+
+                    <div class="holo-label label-bottom">
+                        SEQUENCE_CORE
+                    </div>
+
+                </div>
+
+
+
+                <!-- TERMINAL -->
+
+                <div class="recruiter-hud-logs">
+
+                    <h4>
+                        [▶] MOLECULAR_TARGETS_MONITOR
+                    </h4>
+
+
+                    <div class="hud-log-stream"
+                         id="log-terminal">
+
+                        <p class="log-line">
+                            // Initializing sequence parsing matrix...
+                        </p>
+
+                        <p class="log-line">
+                            // Host-pathogen alignment verified across sectors.
+                        </p>
+
+                        <p class="log-line success">
+                            // Status: Computational pipeline running optimal.
+                        </p>
+
+                    </div>
+
+
+                    <div class="metrics">
+
+                        <div class="metric-progress-wrapper">
+
+                            <div class="metric-label">
+                                STRUCTURAL_BIOINFORMATICS_ENGINE
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div class="progress-fill"
+                                     style="width:94%;"></div>
+
+                            </div>
+
+                            <span class="metric-value">
+                                94%
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-progress-wrapper">
+
+                            <div class="metric-label">
+                                IMMUNOINFORMATICS_PREDICTION_MODELS
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div class="progress-fill"
+                                     style="width:88%;"></div>
+
+                            </div>
+
+                            <span class="metric-value">
+                                88%
+                            </span>
+
+                        </div>
+
+
+                        <div class="metric-progress-wrapper">
+
+                            <div class="metric-label">
+                                REPRODUCIBLE_WORKFLOW_DEPLOYMENT
+                            </div>
+
+                            <div class="progress-track">
+
+                                <div class="progress-fill"
+                                     style="width:91%;"></div>
+
+                            </div>
+
+                            <span class="metric-value">
+                                91%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             ABOUT
+        ====================================================== -->
+
+        <section id="about">
+
+            <div class="section-heading">
+
+                <span>01</span>
+
+                <h2>
+                    ABOUT / COMPILATION
+                </h2>
+
+            </div>
+
+
+            <div class="about-grid">
+
+                <div class="about-text">
+
+                    <p>
+                        My interests include biological data analysis,
+                        structural bioinformatics, molecular simulation
+                        and immunoinformatics approaches to
+                        host–pathogen research.
+                    </p>
+
+                    <p>
+                        I am particularly interested in building
+                        reproducible computational workflows and
+                        scientific tools using Python, Linux and
+                        open-source bioinformatics software.
+                    </p>
+
+                    <p>
+                        My long-term interests extend toward
+                        transcriptomics, functional genomics,
+                        NGS analysis and computational approaches
+                        to understanding biological systems.
+                    </p>
+
+                </div>
+
+
+                <div class="facts">
+
+                    <div class="fact">
+
+                        <span>
+                            EDUCATION DECREE
+                        </span>
+
+                        <strong>
+                            M.Sc. Biotechnology
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fact">
+
+                        <span>
+                            PRIMARY TASK ROUTE
+                        </span>
+
+                        <strong>
+                            Biotechnology & Computational Biology
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fact">
+
+                        <span>
+                            COMPUTATIONAL STACK
+                        </span>
+
+                        <strong>
+                            Python · Linux · Biopython · GROMACS
+                        </strong>
+
+                    </div>
+
+
+                    <div class="fact">
+
+                        <span>
+                            RESEARCH DIRECTION
+                        </span>
+
+                        <strong>
+                            Bioinformatics / Functional Genomics
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             RESEARCH
+        ====================================================== -->
+
+        <section id="research">
+
+            <div class="section-heading">
+
+                <span>02</span>
+
+                <h2>
+                    CORE_RESEARCH_MATRICES
+                </h2>
+
+            </div>
+
+
+            <div class="tag-grid">
+
+                <div>
+                    <span class="tag-number">01</span>
+                    // Computational Biology
+                </div>
+
+                <div>
+                    <span class="tag-number">02</span>
+                    // Structural Bioinformatics
+                </div>
+
+                <div>
+                    <span class="tag-number">03</span>
+                    // Host–Pathogen Biology
+                </div>
+
+                <div>
+                    <span class="tag-number">04</span>
+                    // Immunoinformatics
+                </div>
+
+                <div>
+                    <span class="tag-number">05</span>
+                    // Omics & NGS Analysis
+                </div>
+
+                <div>
+                    <span class="tag-number">06</span>
+                    // Molecular Dynamics
+                </div>
+
+                <div>
+                    <span class="tag-number">07</span>
+                    // Scientific Programming
+                </div>
+
+                <div>
+                    <span class="tag-number">08</span>
+                    // Biological Data Science
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             PROJECTS
+        ====================================================== -->
+
+        <section id="projects">
+
+            <div class="section-heading">
+
+                <span>03</span>
+
+                <h2>
+                    DEPLOYED_REPOSITORIES
+                </h2>
+
+            </div>
+
+
+            <div class="project-grid">
+
+
+                <article class="card hud-clip">
+
+                    <div class="number">
+                        SYS_REF: PRJ_01
+                    </div>
+
+                    <div class="card-icon">
+                        DNA
+                    </div>
+
+                    <h3>
+                        FASTA Toolkit
+                    </h3>
+
+                    <p>
+                        A Python and Biopython-based toolkit for
+                        sequence analysis, including FASTA statistics,
+                        ORF identification, protein translation and
+                        related sequence-analysis workflows.
+                    </p>
+
+                    <a href="https://github.com/abhisheksny/fasta-toolkit"
+                       target="_blank"
+                       rel="noopener noreferrer">
+
+                        LAUNCH_REPOSITORY →
+
+                    </a>
+
+                </article>
+
+
+
+                <article class="card hud-clip">
+
+                    <div class="number">
+                        SYS_REF: PRJ_02
+                    </div>
+
+                    <div class="card-icon">
+                        FCS
+                    </div>
+
+                    <h3>
+                        FACS Data Analysis
+                    </h3>
+
+                    <p>
+                        Python-based workflows for reading FCS files,
+                        generating flow-cytometry plots and extracting
+                        analytical metrics from experimental data.
+                    </p>
+
+                    <a href="#">
+                        RUN_WORKFLOW_MODULE →
+                    </a>
+
+                </article>
+
+
+
+                <article class="card hud-clip">
+
+                    <div class="number">
+                        SYS_REF: PRJ_03
+                    </div>
+
+                    <div class="card-icon">
+                        PCR
+                    </div>
+
+                    <h3>
+                        qPCR Data Analysis
+                    </h3>
+
+                    <p>
+                        Analysis of HPV qPCR data involving quality
+                        control, Ct-based interpretation,
+                        classification and summary statistics.
+                    </p>
+
+                    <a href="#">
+                        PARSED_DATA_LOGS →
+                    </a>
+
+                </article>
+
+
+
+                <article class="card hud-clip">
+
+                    <div class="number">
+                        SYS_REF: PRJ_04
+                    </div>
+
+                    <div class="card-icon">
+                        MD
+                    </div>
+
+                    <h3>
+                        Protein–Ligand Simulation
+                    </h3>
+
+                    <p>
+                        Computational structural-biology workflows
+                        involving molecular docking, molecular dynamics
+                        simulations with GROMACS and trajectory analysis.
+                    </p>
+
+                    <a href="#">
+                        RENDER_SIMULATION_ARRAY →
+                    </a>
+
+                </article>
+
+
+
+                <article class="card hud-clip">
+
+                    <div class="number">
+                        SYS_REF: PRJ_05
+                    </div>
+
+                    <div class="card-icon">
+                        RNA
+                    </div>
+
+                    <h3>
+                        Transcriptomics Pipeline
+                    </h3>
+
+                    <p>
+                        Computational workflows for processing and
+                        interpreting high-throughput transcriptomic
+                        datasets with reproducible analysis strategies.
+                    </p>
+
+                    <a href="#">
+                        ACCESS_PIPELINE →
+                    </a>
+
+                </article>
+
+
+
+                <article class="card hud-clip">
+
+                    <div class="number">
+                        SYS_REF: PRJ_06
+                    </div>
+
+                    <div class="card-icon">
+                        AI
+                    </div>
+
+                    <h3>
+                        Biological Data Science
+                    </h3>
+
+                    <p>
+                        Data-driven computational biology projects
+                        combining Python, statistics, visualization
+                        and machine-learning approaches.
+                    </p>
+
+                    <a href="#">
+                        OPEN_ANALYTICS_NODE →
+                    </a>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             PUBLICATIONS
+        ====================================================== -->
+
+        <section id="publications">
+
+            <div class="section-heading">
+
+                <span>04</span>
+
+                <h2>
+                    VERIFIED_PUBLICATIONS
+                </h2>
+
+            </div>
+
+
+            <article class="publication-card hud-clip">
+
+                <div class="publication-topline">
+
+                    <span class="publication-type">
+                        PEER_REVIEWED ARTICLE // 2026
+                    </span>
+
+                    <span>
+                        REF: APJTB_2026
+                    </span>
+
+                </div>
+
+
+                <h3>
+                    Neem derivatives in integrated control of vectors
+                    and pathogens of leishmaniasis: Current knowledge
+                    and computational insights for future perspectives
+                </h3>
+
+
+                <div class="authors">
+
+                    <strong>AUTHORS:</strong>
+
+                    Singh PN*, Kumar A*, Kumari S,
+                    Bhat AH, Alti D.
+
+                </div>
+
+
+                <div class="journal">
+
+                    <strong>SOURCE_INDEX:</strong>
+
+                    <em>
+                        Asian Pacific Journal of Tropical Biomedicine
+                    </em>
+
+                    · 16(10) · 424–435 · 2026
+
+                </div>
+
+
+                <div class="publication-details">
+
+                    <div>
+
+                        <span>
+                            SYSTEM_DOI
+                        </span>
+
+                        <strong>
+                            10.4103/apjtb.apjtb_383_26
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            METRIC_STATUS
+                        </span>
+
+                        <strong>
+                            INDEXED // COMPLETED
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="publication-actions">
+
+                    <a href="#"
+                       class="button primary">
+
+                        ACCESS_FULL_TEXT_DATA
+
+                    </a>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             EXTERNAL LINKS
+        ====================================================== -->
+
+        <section id="links">
+
+            <div class="section-heading">
+
+                <span>05</span>
+
+                <h2>
+                    EXTERNAL_NODE_LINKS
+                </h2>
+
+            </div>
+
+
+            <div class="link-grid">
+
+
+                <a href="https://github.com/abhisheksny"
+                   class="external-link hud-clip"
+                   target="_blank"
+                   rel="noopener noreferrer">
+
+                    <span>
+                        GitHub
+                    </span>
+
+                    <small>
+                        @abhisheksny
+                    </small>
+
+                    <b>
+                        ↗
+                    </b>
+
+                </a>
+
+
+
+                <a href="#"
+                   class="external-link hud-clip">
+
+                    <span>
+                        ORCID
+                    </span>
+
+                    <small>
+                        0009-0000-2206-0993
+                    </small>
+
+                    <b>
+                        ↗
+                    </b>
+
+                </a>
+
+
+
+                <a href="https://linkedin.com"
+                   class="external-link hud-clip"
+                   target="_blank"
+                   rel="noopener noreferrer">
+
+                    <span>
+                        LinkedIn
+                    </span>
+
+                    <small>
+                        @abhisheksny
+                    </small>
+
+                    <b>
+                        ↗
+                    </b>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
 
         <div>
 
-          <p>
-            My interests include biological data analysis, structural
-            bioinformatics, molecular simulation, immunoinformatics
-            approaches to host–pathogen research.
-          </p>
+            <p>
+                © 2026 abhisheksny // DATA_INTEGRITY_VERIFIED
+            </p>
 
-          <p>
-            I am particularly interested in building reproducible
-            computational workflows and scientific tools using Python,
-            Linux and open-source bioinformatics software.
-          </p>
+            <p class="footer-status">
+                AUTO_BOOT_SEQUENCE: SUCCESSFUL
+            </p>
 
         </div>
 
 
-        <div class="facts">
+        <div class="footer-links">
 
-          <div class="fact">
-            <span>Education</span>
-            <strong>M.Sc. Biotechnology</strong>
-          </div>
+            <a href="#">
+                EMAIL
+            </a>
 
-          <div class="fact">
-            <span>Primary direction</span>
-            <strong>Biotechnology & Computational Biology</strong>
-          </div>
+            <a href="https://github.com/abhisheksny"
+               target="_blank"
+               rel="noopener noreferrer">
 
-        </div>
+                GITHUB
 
-      </div>
+            </a>
 
-    </section>
+            <a href="#">
+                ORCID
+            </a>
 
+            <a href="#"
+               id="backToTop">
 
-    <section id="research">
+                BACK_TO_APEX ↑
 
-      <div class="section-heading">
-        <h2>Research interests</h2>
-      </div>
-
-      <div class="tag-grid">
-
-        <div>Computational Biology</div>
-        <div>Structural Bioinformatics</div>
-        <div>Host–Pathogen Biology</div>
-        <div>Immunoinformatics</div>
-        <div>Omics & NGS Analysis</div>
-        <div>Molecular Dynamics</div>
-        <div>Scientific Programming</div>
-
-      </div>
-
-    </section>
-
-
-    <section id="projects">
-
-      <div class="section-heading">
-        <h2>Selected projects</h2>
-      </div>
-
-      <div class="project-grid">
-
-
-        <article class="card">
-
-          <h3>FASTA Toolkit</h3>
-
-          <p>
-            A Python and Biopython-based toolkit for sequence analysis,
-            including FASTA statistics, ORF identification, protein
-            translation and related sequence-analysis workflows.
-          </p>
-
-          <a
-            href="https://github.com/abhisheksny/bio_project"
-            target="_blank"
-            rel="noopener"
-          >
-            View on GitHub →
-          </a>
-
-        </article>
-
-
-        <article class="card">
-
-          <h3>FACS Data Analysis</h3>
-
-          <p>
-            Python-based workflows for reading FCS files, generating
-            flow-cytometry plots and extracting analytical metrics from
-            experimental data.
-          </p>
-
-          <span class="status">
-            Research workflow
-          </span>
-
-        </article>
-
-
-        <article class="card">
-
-          <h3>qPCR Data Analysis</h3>
-
-          <p>
-            Analysis of HPV qPCR data involving quality control,
-            Ct-based interpretation, classification and summary statistics.
-          </p>
-
-          <span class="status">
-            Experimental data analysis
-          </span>
-
-        </article>
-
-
-        <article class="card">
-
-          <h3>Protein–Ligand Simulation</h3>
-
-          <p>
-            Computational structural-biology workflows involving molecular
-            docking, molecular dynamics simulations with GROMACS and
-            trajectory analysis.
-          </p>
-
-          <span class="status">
-            Computational research
-          </span>
-
-        </article>
-
-
-      </div>
-
-    </section>
-
-
-    <section id="publications">
-
-      <div class="section-heading">
-        <h2>Publications</h2>
-      </div>
-
-      <article class="publication-card">
-
-        <div class="publication-topline">
-          <span class="publication-type">Article</span>
-          <span class="publication-year">2026</span>
-        </div>
-
-        <h3>
-          Neem derivatives in integrated control of vectors and pathogens of
-          leishmaniasis: Current knowledge and computational insights for
-          future perspectives
-        </h3>
-
-        <p class="authors">
-          Singh PN*, <strong>Kumar A*</strong>, Kumari S, Bhat AH, Alti D.
-        </p>
-
-        <p class="journal">
-          <em>Asian Pacific Journal of Tropical Biomedicine</em> · 16(10) ·
-          424–435 · 2026
-        </p>
-
-        <div class="publication-actions">
-
-          <a
-            class="button primary"
-            href="https://doi.org/10.4103/apjtb.apjtb_383_26"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read article ↗
-          </a>
-
-          <a
-            class="text-link"
-            href="https://doi.org/10.4103/apjtb.apjtb_383_26"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            DOI: 10.4103/apjtb.apjtb_383_26
-          </a>
+            </a>
 
         </div>
 
-      </article>
-
-    </section>
+    </footer>
 
 
-    <section id="links">
 
-      <div class="section-heading">
-        <h2>Links</h2>
-      </div>
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
 
-      <div class="link-grid">
+    <script>
 
+        /* =====================================================
+           REAL-TIME SYSTEM LOG LOOP
+        ====================================================== */
 
-        <a
-          href="https://github.com/abhisheksny"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>GitHub</span>
-          <small>@abhisheksny</small>
-        </a>
+        const logs = [
 
+            "// Accessing FASTA sequence dataset configurations...",
 
-        <a
-          href="https://orcid.org/0009-0000-2206-0993"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>ORCID</span>
-          <small>0009-0000-2206-0993</small>
-        </a>
+            "// Computing target peptide bindings via immunoinformatics parameters.",
 
+            "// Executing structural trajectory rendering metrics via GROMACS frameworks.",
 
-        <a
-          href="https://www.linkedin.com/in/abhisheksny/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>LinkedIn</span>
-          <small>@abhisheksny</small>
-        </a>
+            "// Mapping host immune responses to target antigen vectors...",
 
+            "// Molecular docking array status: Complete.",
 
-      </div>
+            "// Real-time qPCR classification matrix updated cleanly.",
 
-    </section>
+            "// Transcriptomic data processing node initialized.",
+
+            "// Python biological data pipeline operational.",
+
+            "// Sequence quality-control matrix synchronized.",
+
+            "// Host-pathogen interaction database connected.",
+
+            "// Computational research environment verified."
+
+        ];
 
 
-  </main>
+        const terminal =
+            document.getElementById("log-terminal");
 
 
-  <footer>
+        function addLog() {
 
-    <div>
-      <p>© 2026 abhisheksny</p>
-    </div>
-
-    <div class="footer-links">
-
-      <a href="mailto:abhishek.genome@gmail.com">
-        Email
-      </a>
-
-      <a
-        href="https://github.com/abhisheksny"
-        target="_blank"
-        rel="noopener"
-      >
-        GitHub
-      </a>
-
-      <a
-        href="https://orcid.org/0009-0000-2206-0993"
-        target="_blank"
-        rel="noopener"
-      >
-        ORCID
-      </a>
-
-      <a href="#top">
-        Back to top ↑
-      </a>
-
-    </div>
-
-  </footer>
+            const randomLine =
+                logs[Math.floor(Math.random() * logs.length)];
 
 
-  <!-- DARK MODE -->
+            const p =
+                document.createElement("p");
 
-  <script>
 
-    const themeToggle = document.querySelector(".theme-toggle");
-    const themeIcon = document.querySelector(".theme-icon");
-    const themeLabel = document.querySelector(".theme-label");
+            p.className = "log-line";
 
-    const savedTheme = localStorage.getItem("theme");
+            p.innerText = randomLine;
 
-    function setTheme(theme) {
 
-      if (theme === "dark") {
+            terminal.appendChild(p);
 
-        document.documentElement.setAttribute("data-theme", "dark");
 
-        themeIcon.textContent = "☀";
-        themeLabel.textContent = "Light";
+            while (terminal.children.length > 5) {
 
-        themeToggle.setAttribute(
-          "aria-label",
-          "Switch to light mode"
+                terminal.removeChild(
+                    terminal.firstElementChild
+                );
+
+            }
+
+        }
+
+
+        setInterval(addLog, 3000);
+
+
+
+        /* =====================================================
+           LIVE SYSTEM CLOCK
+        ====================================================== */
+
+        function updateSysTime() {
+
+            const now = new Date();
+
+            const timestamp =
+                now.toISOString()
+                .replace("T", " ")
+                .substring(0, 19);
+
+            document.getElementById(
+                "live-timestamp"
+            ).innerText =
+                "SYS_TIME: " + timestamp + " UTC";
+
+        }
+
+
+        updateSysTime();
+
+        setInterval(updateSysTime, 1000);
+
+
+
+        /* =====================================================
+           SECURE CORE TOGGLE
+        ====================================================== */
+
+        const coreToggle =
+            document.getElementById("coreToggle");
+
+        const coreStatus =
+            document.getElementById("coreStatus");
+
+
+        let coreActive = true;
+
+
+        coreToggle.addEventListener(
+            "click",
+            () => {
+
+                coreActive = !coreActive;
+
+
+                if (coreActive) {
+
+                    coreStatus.innerText =
+                        "SECURE_CORE: ON";
+
+                    document.body.classList.remove(
+                        "core-off"
+                    );
+
+                } else {
+
+                    coreStatus.innerText =
+                        "SECURE_CORE: STANDBY";
+
+                    document.body.classList.add(
+                        "core-off"
+                    );
+
+                }
+
+            }
         );
 
-        themeToggle.setAttribute(
-          "aria-pressed",
-          "true"
+
+
+        /* =====================================================
+           MOUSE REACTIVE GLOW
+        ====================================================== */
+
+        const cursorGlow =
+            document.querySelector(".cursor-glow");
+
+
+        document.addEventListener(
+            "mousemove",
+            (event) => {
+
+                cursorGlow.style.left =
+                    event.clientX + "px";
+
+                cursorGlow.style.top =
+                    event.clientY + "px";
+
+            }
         );
 
-      } else {
 
-        document.documentElement.removeAttribute("data-theme");
 
-        themeIcon.textContent = "☾";
-        themeLabel.textContent = "Dark";
+        /* =====================================================
+           CARD MOUSE EFFECT
+        ====================================================== */
 
-        themeToggle.setAttribute(
-          "aria-label",
-          "Switch to dark mode"
+        const cards =
+            document.querySelectorAll(
+                ".card"
+            );
+
+
+        cards.forEach(card => {
+
+            card.addEventListener(
+                "mousemove",
+                event => {
+
+                    const rect =
+                        card.getBoundingClientRect();
+
+                    const x =
+                        event.clientX - rect.left;
+
+                    const y =
+                        event.clientY - rect.top;
+
+
+                    const rotateX =
+                        ((y / rect.height) - 0.5) * -4;
+
+                    const rotateY =
+                        ((x / rect.width) - 0.5) * 4;
+
+
+                    card.style.transform =
+                        `perspective(800px)
+                         rotateX(${rotateX}deg)
+                         rotateY(${rotateY}deg)
+                         translateY(-4px)`;
+
+                }
+            );
+
+
+            card.addEventListener(
+                "mouseleave",
+                () => {
+
+                    card.style.transform =
+                        "";
+
+                }
+            );
+
+        });
+
+
+
+        /* =====================================================
+           SCROLL REVEAL
+        ====================================================== */
+
+        const revealElements =
+            document.querySelectorAll(
+                "section"
+            );
+
+
+        const observer =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add(
+                                "visible"
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(
+            section =>
+                observer.observe(section)
         );
 
-        themeToggle.setAttribute(
-          "aria-pressed",
-          "false"
+
+
+        /* =====================================================
+           BACK TO TOP
+        ====================================================== */
+
+        document
+            .getElementById("backToTop")
+            .addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+
+
+        /* =====================================================
+           CONSOLE IDENTITY
+        ====================================================== */
+
+        console.log(
+            "%c ABHISHEK KUMAR // BIOINFORMATICS CORE ",
+            "color:#00f3ff;font-size:16px;font-weight:bold;"
         );
 
-      }
+        console.log(
+            "%c SYSTEM STATUS: ONLINE ",
+            "color:#00ffaa;font-size:12px;"
+        );
 
-    }
-
-
-    if (savedTheme === "dark") {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-
-
-    themeToggle.addEventListener("click", () => {
-
-      const currentTheme =
-        document.documentElement.getAttribute("data-theme");
-
-      if (currentTheme === "dark") {
-
-        setTheme("light");
-        localStorage.setItem("theme", "light");
-
-      } else {
-
-        setTheme("dark");
-        localStorage.setItem("theme", "dark");
-
-      }
-
-    });
-
-  </script>
-
+    </script>
 
 </body>
+
 </html>
