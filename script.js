@@ -1,1742 +1,2052 @@
-/* =========================================================
-   ABHISHEK KUMAR — MAIN WEBSITE PARTICLE SYSTEM
-   ---------------------------------------------------------
-   This is the POST-INTRO system.
-
-   intro.js
-      ↓
-   cinematic hand / cores / snap / explosion
-      ↓
-   intro disappears
-      ↓
-   this file takes over
-      ↓
-   subtle DNA + ambient particles + cursor interaction
-
-   NO GIANT NEURAL NETWORK
-   NO YELLOW / GOLD THEME
-   ========================================================= */
-
-import * as THREE from "three";
-
-
-/* =========================================================
-   CONFIG
-   ========================================================= */
-
 const CFG = {
-
-  desktopParticles: 15000,
-
-  mobileParticles: 6500,
-
-  ambientStars: 1200,
-
-  dnaRadius: 1.7,
-
-  dnaHeight: 7.6,
-
-  dnaTurns: 4.8,
-
-  dnaRungs: 70,
-
-  particleSize: 1.0,
-
-  rotationSpeed: 0.035,
-
-  mouseStrength: 0.55,
-
-  mouseRadius: 1.8
-
+  particlesDesktop: 42000, particlesLowEnd: 24000, particlesMobile: 12000,
+  bloom: 0.55, bloomRadius: 0.4,
+  spring: 5.0, damping: 3.2,
+  fieldRadius: 2.7, fieldPush: 55, fieldSwirl: 0.35,
+  rotateSpeed: 0.12,
+  netNodesDesktop: 150, netNodesMobile: 70
 };
 
-
-/* =========================================================
-   BASIC STATE
-   ========================================================= */
-
-const reduceMotion =
-  window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-const coarsePointer =
-  window.matchMedia(
-    "(pointer: coarse)"
-  ).matches;
-
-const isMobile =
-  window.innerWidth < 760;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coarse = matchMedia("(pointer: coarse)").matches;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const smooth = x => x * x * (3 - 2 * x);
 
 
-/* =========================================================
-   DOM
-   ========================================================= */
+/* ---------- Scroll reveal + card spotlight ---------- */
 
-const canvas =
-  document.getElementById(
-    "hero-canvas"
-  );
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) {
+    e.target.classList.add("in");
+    io.unobserve(e.target);
+  }
+}), { threshold: 0.12 });
 
-const hero =
-  document.querySelector(
-    ".hero"
-  );
+document.querySelectorAll(".reveal").forEach(el =>
+  reduce ? el.classList.add("in") : io.observe(el)
+);
 
-const cursorEl =
-  document.querySelector(
-    ".cursor-field"
-  );
-
-const navEl =
-  document.querySelector(
-    ".nav"
-  );
+document.querySelectorAll(".card, .link-grid a").forEach(el => {
+  el.addEventListener("pointermove", e => {
+    const b = el.getBoundingClientRect();
+    el.style.setProperty("--mx", (e.clientX - b.left) + "px");
+    el.style.setProperty("--my", (e.clientY - b.top) + "px");
+  });
+});
 
 
-/*
-   If canvas doesn't exist,
-   stop cleanly.
-*/
+/* ---------- Scroll HUD: progress bar + section rail ---------- */
 
-if (!canvas) {
+const bar = document.createElement("div");
+bar.className = "progress";
+document.body.appendChild(bar);
 
-  console.warn(
-    "hero-canvas not found."
-  );
+const rail = document.createElement("nav");
+rail.className = "rail";
+rail.setAttribute("aria-label", "Section navigation");
 
-} else {
+[
+  ["top", "Hero"],
+  ["about", "About"],
+  ["research", "Research"],
+  ["projects", "Projects"],
+  ["publications", "Publications"],
+  ["links", "Links"]
+].forEach(([id, t]) => {
+  const a = document.createElement("a");
+  a.href = "#" + id;
+  a.dataset.id = id;
+  a.innerHTML = `<span>${t}</span><i></i>`;
+  rail.appendChild(a);
+});
 
+document.body.appendChild(rail);
 
-  /* =======================================================
-     THREE.JS SETUP
-     ======================================================= */
-
-  const scene =
-    new THREE.Scene();
-
-
-  const camera =
-    new THREE.PerspectiveCamera(
-
-      45,
-
-      window.innerWidth /
-      window.innerHeight,
-
-      0.1,
-
-      100
-
+const spy = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) {
+    rail.querySelectorAll("a").forEach(a =>
+      a.classList.toggle("on", a.dataset.id === e.target.dataset.rail)
     );
+  }
+}), { rootMargin: "-45% 0px -50% 0px" });
+
+[
+  [document.querySelector(".hero"), "top"],
+  ...["about", "research", "projects", "publications", "links"]
+    .map(i => [document.getElementById(i), i])
+]
+.forEach(([el, id]) => {
+  if (el) {
+    el.dataset.rail = id;
+    spy.observe(el);
+  }
+});
+
+addEventListener("scroll", () => {
+  bar.style.transform =
+    `scaleX(${clamp(
+      scrollY /
+      Math.max(1, document.documentElement.scrollHeight - innerHeight),
+      0,
+      1
+    )})`;
+}, { passive: true });
 
 
-  camera.position.set(
-    0,
-    0,
-    13
+/* ---------- Page-wide particle scene ---------- */
+
+async function initHero() {
+  const hero = document.querySelector(".hero");
+  const canvas = document.getElementById("hero-canvas");
+  const cursorEl = document.querySelector(".cursor-field");
+  const navEl = document.querySelector(".nav");
+
+  let THREE, EffectComposer, RenderPass, UnrealBloomPass, OutputPass;
+
+  try {
+    THREE = await import("three");
+
+    ({ EffectComposer } =
+      await import("three/addons/postprocessing/EffectComposer.js"));
+
+    ({ RenderPass } =
+      await import("three/addons/postprocessing/RenderPass.js"));
+
+    ({ UnrealBloomPass } =
+      await import("three/addons/postprocessing/UnrealBloomPass.js"));
+
+    ({ OutputPass } =
+      await import("three/addons/postprocessing/OutputPass.js"));
+
+  } catch (err) {
+    document.body.classList.add("no-webgl");
+    console.warn("Three.js failed to load", err);
+    return;
+  }
+
+  let renderer;
+
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: false,
+      powerPreference: "high-performance"
+    });
+  } catch (err) {
+    document.body.classList.add("no-webgl");
+    return;
+  }
+
+  const small = innerWidth < 760;
+  const lowEnd = (navigator.hardwareConcurrency || 4) <= 4;
+
+  const override =
+    Number(new URLSearchParams(location.search).get("particles"));
+
+  const N =
+    override > 0
+      ? override
+      : (coarse || small)
+        ? CFG.particlesMobile
+        : lowEnd
+          ? CFG.particlesLowEnd
+          : CFG.particlesDesktop;
+
+  const countEl = document.getElementById("hud-count");
+
+  if (countEl) {
+    countEl.textContent = N.toLocaleString("en-US");
+  }
+
+  const dpr = Math.min(
+    devicePixelRatio || 1,
+    coarse ? 1.25 : 1.75
   );
 
+  renderer.setPixelRatio(dpr);
 
-  const renderer =
-    new THREE.WebGLRenderer({
+  /* ===== BLUE / CYAN BACKGROUND ===== */
+  renderer.setClearColor(0x071426, 1);
 
-      canvas,
+  const scene = new THREE.Scene();
 
-      antialias:false,
+  const camera = new THREE.PerspectiveCamera(
+    45,
+    1,
+    0.1,
+    300
+  );
 
-      alpha:true,
+  camera.position.z = 20;
 
-      powerPreference:
-        "high-performance"
+  const composer = new EffectComposer(renderer);
 
+  composer.setPixelRatio(dpr);
+
+  composer.addPass(
+    new RenderPass(scene, camera)
+  );
+
+  const bloom = new UnrealBloomPass(
+    new THREE.Vector2(1, 1),
+    CFG.bloom,
+    CFG.bloomRadius,
+    0.12
+  );
+
+  composer.addPass(bloom);
+  composer.addPass(new OutputPass());
+
+
+  /* ---------- Shaders ---------- */
+
+  const vertexShader = `
+    uniform float uTime, uPx, uDim;
+    attribute float aSize, aSeed, aEnergy;
+    attribute vec3 aColor;
+
+    varying vec3 vC;
+    varying float vA;
+
+    void main() {
+
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+
+      float tw =
+        0.75 +
+        0.25 *
+        sin(uTime * 1.3 + aSeed * 40.0);
+
+      gl_PointSize =
+        aSize *
+        uPx *
+        (24.0 / -mv.z) *
+        (1.0 + aEnergy * 0.8);
+
+      vC =
+        mix(
+          aColor,
+          vec3(1.0),
+          aEnergy * 0.45
+        ) *
+        (1.0 + aEnergy * 0.8);
+
+      vA =
+        tw *
+        (0.55 + aEnergy * 0.45) *
+        clamp(
+          1.0 -
+          (-mv.z - 14.0) / 40.0,
+          0.2,
+          1.0
+        ) *
+        uDim;
+
+      gl_Position =
+        projectionMatrix *
+        mv;
+    }
+  `;
+
+  const fragmentShader = `
+    varying vec3 vC;
+    varying float vA;
+
+    void main() {
+
+      float d =
+        length(
+          gl_PointCoord - 0.5
+        );
+
+      float a =
+        smoothstep(
+          0.5,
+          0.0,
+          d
+        );
+
+      a *= a;
+
+      gl_FragColor =
+        vec4(
+          vC,
+          a * vA
+        );
+    }
+  `;
+
+
+  const uTime = { value: 0 };
+  const uPx = { value: dpr };
+
+  const mkMat = dim =>
+    new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader,
+      fragmentShader,
+
+      uniforms: {
+        uTime,
+        uPx,
+        uDim: { value: dim }
+      }
     });
 
+  const material = mkMat(1);
+  const netMat = mkMat(0);
 
-  const dpr =
-    Math.min(
-      window.devicePixelRatio || 1,
-      coarsePointer ? 1.25 : 1.7
-    );
 
+  /* ---------- DNA ---------- */
 
-  renderer.setPixelRatio(
-    dpr
-  );
+  const R = 1.7;
+  const H = 20;
+  const TURNS = 5;
+  const RUNGS = 70;
+  const TILT = 0.32;
 
 
-  renderer.setSize(
-    window.innerWidth,
-    window.innerHeight,
-    false
-  );
+  /* ===== BLUE / CYAN DNA PALETTE ===== */
 
+  const PAL = {
+    cyan:  [0.15, 0.85, 1.0],
+    blue:  [0.12, 0.45, 1.0],
+    white: [0.85, 0.95, 1.0],
+    gold:  [0.30, 0.65, 1.0]
+  };
 
-  renderer.outputColorSpace =
-    THREE.SRGBColorSpace;
 
+  const g = () =>
+    (Math.random() +
+      Math.random() +
+      Math.random() -
+      1.5) * 0.8;
 
-  renderer.setClearColor(
-    0x000000,
-    0
-  );
 
+  const strand = (t, ph) => {
+    const a =
+      t * TURNS * Math.PI * 2 +
+      ph;
 
-  /* =======================================================
-     PARTICLE COUNT
-     ======================================================= */
+    return [
+      R * Math.cos(a),
+      (t - 0.5) * H,
+      R * Math.sin(a)
+    ];
+  };
 
-  const PARTICLE_COUNT =
-    isMobile
-      ? CFG.mobileParticles
-      : CFG.desktopParticles;
 
+  const rest = new Float32Array(N * 3);
+  const pos = new Float32Array(N * 3);
+  const vel = new Float32Array(N * 3);
 
-  /* =======================================================
-     COLORS
-     -------------------------------------------------------
-     White / cyan / blue only.
+  const spd = new Float32Array(N);
+  const size = new Float32Array(N);
+  const seed = new Float32Array(N);
 
-     No yellow.
-     No amber.
-     ======================================================= */
+  const col = new Float32Array(N * 3);
+  const energy = new Float32Array(N);
 
-  const COLOR_CYAN =
-    new THREE.Color(
-      "#35d9ff"
-    );
 
-  const COLOR_BLUE =
-    new THREE.Color(
-      "#3b82f6"
-    );
+  for (let i = 0; i < N; i++) {
 
-  const COLOR_WHITE =
-    new THREE.Color(
-      "#f2f7ff"
-    );
+    const k = Math.random();
 
-  const COLOR_ICE =
-    new THREE.Color(
-      "#9eeaff"
-    );
+    let p;
+    let c;
 
+    let s =
+      0.6 +
+      Math.random() * 0.8;
 
-  /* =======================================================
-     PARTICLE ARRAYS
-     ======================================================= */
 
-  const positions =
-    new Float32Array(
-      PARTICLE_COUNT * 3
-    );
+    if (k < 0.7) {
 
-  const base =
-    new Float32Array(
-      PARTICLE_COUNT * 3
-    );
+      const ph =
+        Math.random() < 0.5
+          ? 0
+          : Math.PI;
 
-  const colors =
-    new Float32Array(
-      PARTICLE_COUNT * 3
-    );
+      if (Math.random() < 0.07) {
 
-  const sizes =
-    new Float32Array(
-      PARTICLE_COUNT
-    );
+        const t =
+          (Math.floor(
+            Math.random() * RUNGS
+          ) + 0.5) /
+          RUNGS;
 
-  const seeds =
-    new Float32Array(
-      PARTICLE_COUNT
-    );
+        const q =
+          strand(t, ph);
 
+        p = [
+          q[0] + g() * 0.28,
+          q[1] + g() * 0.28,
+          q[2] + g() * 0.28
+        ];
 
-  /* =======================================================
-     HELPER
-     ======================================================= */
+        s *= 1.5;
 
-  function putParticle(
-    index,
-    x,
-    y,
-    z,
-    color,
-    size
-  ) {
+      } else {
 
-    const p =
-      index * 3;
+        const q =
+          strand(
+            Math.random(),
+            ph
+          );
 
+        p = [
+          q[0] + g() * 0.09,
+          q[1] + g() * 0.09,
+          q[2] + g() * 0.09
+        ];
+      }
 
-    positions[p] =
-      base[p] =
-        x;
 
-    positions[p + 1] =
-      base[p + 1] =
-        y;
+      const r = Math.random();
 
-    positions[p + 2] =
-      base[p + 2] =
-        z;
+      c =
+        r < 0.62
+          ? PAL.cyan
+          : r < 0.85
+            ? PAL.blue
+            : r < 0.95
+              ? PAL.white
+              : PAL.gold;
 
 
-    colors[p] =
-      color.r;
+    } else if (k < 0.9) {
 
-    colors[p + 1] =
-      color.g;
+      const t =
+        (Math.floor(
+          Math.random() * RUNGS
+        ) + 0.5) /
+        RUNGS;
 
-    colors[p + 2] =
-      color.b;
+      const a =
+        strand(t, 0);
 
+      const b =
+        strand(t, Math.PI);
 
-    sizes[index] =
-      size;
+      const u =
+        Math.random();
 
+      p = [
+        a[0] +
+          (b[0] - a[0]) * u +
+          g() * 0.05,
 
-    seeds[index] =
-      Math.random();
-  }
+        a[1] +
+          (b[1] - a[1]) * u +
+          g() * 0.05,
 
+        a[2] +
+          (b[2] - a[2]) * u +
+          g() * 0.05
+      ];
 
-  /* =======================================================
-     DNA GEOMETRY
-     ======================================================= */
+      c =
+        u < 0.5
+          ? (
+              Math.random() < 0.5
+                ? PAL.gold
+                : PAL.white
+            )
+          : PAL.cyan;
 
-  let index = 0;
+      s *= 0.85;
 
-
-  const R =
-    CFG.dnaRadius;
-
-  const H =
-    CFG.dnaHeight;
-
-  const TURNS =
-    CFG.dnaTurns;
-
-
-  function strandPoint(
-    t,
-    phase
-  ) {
-
-    const angle =
-      t *
-      TURNS *
-      Math.PI *
-      2 +
-      phase;
-
-
-    return {
-
-      x:
-        Math.cos(angle) *
-        R,
-
-      y:
-        (t - 0.5) *
-        H,
-
-      z:
-        Math.sin(angle) *
-        R
-
-    };
-  }
-
-
-  /* =======================================================
-     MAIN DNA STRANDS
-     ======================================================= */
-
-  const strandParticles =
-    Math.floor(
-      PARTICLE_COUNT *
-      0.58
-    );
-
-
-  for (
-    let i = 0;
-
-    i < strandParticles &&
-    index < PARTICLE_COUNT;
-
-    i++
-  ) {
-
-    const t =
-      Math.random();
-
-
-    const phase =
-      Math.random() < 0.5
-        ? 0
-        : Math.PI;
-
-
-    const p =
-      strandPoint(
-        t,
-        phase
-      );
-
-
-    const jitter =
-      0.075;
-
-
-    const x =
-      p.x +
-      (
-        Math.random() -
-        0.5
-      ) *
-      jitter;
-
-
-    const y =
-      p.y +
-      (
-        Math.random() -
-        0.5
-      ) *
-      jitter;
-
-
-    const z =
-      p.z +
-      (
-        Math.random() -
-        0.5
-      ) *
-      jitter;
-
-
-    const r =
-      Math.random();
-
-
-    let color;
-
-
-    if (r < 0.48) {
-
-      color =
-        COLOR_CYAN;
-
-    } else if (r < 0.82) {
-
-      color =
-        COLOR_BLUE;
-
-    } else if (r < 0.94) {
-
-      color =
-        COLOR_ICE;
 
     } else {
 
-      color =
-        COLOR_WHITE;
+      const rad =
+        2.6 +
+        Math.random() * 2.4;
+
+      const ang =
+        Math.random() * 6.283;
+
+      p = [
+        rad * Math.cos(ang),
+        (Math.random() - 0.5) * H,
+        rad * Math.sin(ang)
+      ];
+
+      spd[i] =
+        (Math.random() < 0.5 ? -1 : 1) *
+        (0.15 + Math.random() * 0.35);
+
+      c =
+        Math.random() < 0.6
+          ? PAL.white
+          : PAL.cyan;
+
+      s *= 0.6;
     }
 
 
-    const size =
-      r > 0.92
-        ? 1.6
-        : 0.8 +
-          Math.random() *
-          0.7;
+    if (Math.random() < 0.03) {
+      s *= 2.2;
+    }
 
+    rest.set(p, i * 3);
+    col.set(c, i * 3);
 
-    putParticle(
-      index++,
-      x,
-      y,
-      z,
-      color,
-      size
-    );
+    size[i] = s;
+    seed[i] = Math.random();
+
+    pos[i * 3] =
+      (Math.random() - 0.5) * 60;
+
+    pos[i * 3 + 1] =
+      (Math.random() - 0.5) * 40;
+
+    pos[i * 3 + 2] =
+      -40 +
+      Math.random() * 50;
   }
 
 
-  /* =======================================================
-     DNA BASE-PAIR PARTICLES
-     ======================================================= */
+  const geo =
+    new THREE.BufferGeometry();
 
-  const rungParticles =
-    Math.floor(
-      PARTICLE_COUNT *
-      0.24
+  const posAttr =
+    new THREE.BufferAttribute(
+      pos,
+      3
+    ).setUsage(
+      THREE.DynamicDrawUsage
     );
 
+  const enAttr =
+    new THREE.BufferAttribute(
+      energy,
+      1
+    ).setUsage(
+      THREE.DynamicDrawUsage
+    );
 
-  for (
-    let i = 0;
+  geo.setAttribute(
+    "position",
+    posAttr
+  );
 
-    i < rungParticles &&
-    index < PARTICLE_COUNT;
+  geo.setAttribute(
+    "aEnergy",
+    enAttr
+  );
 
-    i++
-  ) {
+  geo.setAttribute(
+    "aSize",
+    new THREE.BufferAttribute(
+      size,
+      1
+    )
+  );
 
-    const t =
-      (
-        Math.floor(
-          Math.random() *
-          CFG.dnaRungs
-        ) +
-        0.5
-      ) /
-      CFG.dnaRungs;
+  geo.setAttribute(
+    "aSeed",
+    new THREE.BufferAttribute(
+      seed,
+      1
+    )
+  );
+
+  geo.setAttribute(
+    "aColor",
+    new THREE.BufferAttribute(
+      col,
+      3
+    )
+  );
+
+  const points =
+    new THREE.Points(
+      geo,
+      material
+    );
+
+  points.frustumCulled = false;
+
+  scene.add(points);
 
 
-    const a =
-      strandPoint(
-        t,
-        0
+  /* ---------- Starfield + dust ---------- */
+
+  const SN = 1600;
+  const T = SN + 90;
+
+  const sp =
+    new Float32Array(T * 3);
+
+  const ss =
+    new Float32Array(T);
+
+  const sd =
+    new Float32Array(T);
+
+  const se =
+    new Float32Array(T);
+
+  const sc =
+    new Float32Array(T * 3);
+
+
+  for (let i = 0; i < T; i++) {
+
+    const dust = i >= SN;
+
+    const rad =
+      45 +
+      Math.random() * 70;
+
+    const th =
+      Math.random() * 6.283;
+
+    const ph =
+      Math.acos(
+        2 * Math.random() - 1
       );
+
+    sp.set([
+      rad *
+        Math.sin(ph) *
+        Math.cos(th),
+
+      rad *
+        Math.sin(ph) *
+        Math.sin(th) *
+        0.7,
+
+      -Math.abs(
+        rad * Math.cos(ph)
+      ) - 10
+    ], i * 3);
+
+
+    ss[i] =
+      dust
+        ? 26 + Math.random() * 20
+        : 0.5 + Math.random() * 0.9;
+
+    sd[i] =
+      Math.random();
 
 
     const b =
-      strandPoint(
-        t,
-        Math.PI
-      );
+      dust
+        ? 0.05
+        : 0.35 + Math.random() * 0.4;
 
 
-    const u =
-      Math.random();
+    /* ===== COOL BLUE STARFIELD ===== */
 
-
-    const x =
-      THREE.MathUtils.lerp(
-        a.x,
-        b.x,
-        u
-      );
-
-
-    const y =
-      THREE.MathUtils.lerp(
-        a.y,
-        b.y,
-        u
-      );
-
-
-    const z =
-      THREE.MathUtils.lerp(
-        a.z,
-        b.z,
-        u
-      );
-
-
-    const spread =
-      0.045;
-
-
-    const color =
-      Math.random() <
-      0.25
-        ? COLOR_WHITE
-        : COLOR_CYAN;
-
-
-    putParticle(
-
-      index++,
-
-      x +
-        (
-          Math.random() -
-          0.5
-        ) *
-        spread,
-
-      y +
-        (
-          Math.random() -
-          0.5
-        ) *
-        spread,
-
-      z +
-        (
-          Math.random() -
-          0.5
-        ) *
-        spread,
-
-      color,
-
-      0.65 +
-        Math.random() *
-        0.55
-    );
+    sc.set([
+      b * 0.72,
+      b * 0.9,
+      b
+    ], i * 3);
   }
 
 
-  /* =======================================================
-     AMBIENT PARTICLES
-     ======================================================= */
-
-  while (
-    index <
-    PARTICLE_COUNT
-  ) {
-
-    const angle =
-      Math.random() *
-      Math.PI *
-      2;
-
-
-    const radius =
-      2.8 +
-      Math.pow(
-        Math.random(),
-        0.7
-      ) *
-      4.8;
-
-
-    const y =
-      (
-        Math.random() -
-        0.5
-      ) *
-      9;
-
-
-    const x =
-      Math.cos(angle) *
-      radius;
-
-
-    const z =
-      Math.sin(angle) *
-      radius;
-
-
-    const r =
-      Math.random();
-
-
-    const color =
-      r < 0.62
-        ? COLOR_BLUE
-        : r < 0.90
-          ? COLOR_CYAN
-          : COLOR_WHITE;
-
-
-    putParticle(
-
-      index++,
-
-      x,
-
-      y,
-
-      z,
-
-      color,
-
-      0.25 +
-        Math.random() *
-        0.6
-
-    );
-  }
-
-
-  /* =======================================================
-     PARTICLE GEOMETRY
-     ======================================================= */
-
-  const geometry =
+  const sgeo =
     new THREE.BufferGeometry();
 
-
-  geometry.setAttribute(
-
+  sgeo.setAttribute(
     "position",
-
     new THREE.BufferAttribute(
-      positions,
+      sp,
       3
     )
-
   );
 
-
-  geometry.setAttribute(
-
-    "aColor",
-
-    new THREE.BufferAttribute(
-      colors,
-      3
-    )
-
-  );
-
-
-  geometry.setAttribute(
-
+  sgeo.setAttribute(
     "aSize",
-
     new THREE.BufferAttribute(
-      sizes,
+      ss,
       1
     )
-
   );
 
-
-  geometry.setAttribute(
-
+  sgeo.setAttribute(
     "aSeed",
-
     new THREE.BufferAttribute(
-      seeds,
+      sd,
       1
     )
-
   );
 
-
-  /* =======================================================
-     SHADER
-     ======================================================= */
-
-  const particleMaterial =
-    new THREE.ShaderMaterial({
-
-      transparent:true,
-
-      depthWrite:false,
-
-      blending:
-        THREE.AdditiveBlending,
-
-      uniforms:{
-
-        uTime:{
-          value:0
-        },
-
-        uPixelRatio:{
-          value:dpr
-        },
-
-        uOpacity:{
-          value:0
-        }
-
-      },
-
-
-      vertexShader:`
-
-        attribute vec3 aColor;
-
-        attribute float aSize;
-
-        attribute float aSeed;
-
-
-        uniform float uTime;
-
-        uniform float uPixelRatio;
-
-
-        varying vec3 vColor;
-
-        varying float vAlpha;
-
-
-        void main(){
-
-          vec4 mv =
-            modelViewMatrix *
-            vec4(
-              position,
-              1.0
-            );
-
-
-          float pulse =
-            0.82 +
-            0.18 *
-            sin(
-              uTime *
-              1.3 +
-              aSeed *
-              25.0
-            );
-
-
-          gl_PointSize =
-            aSize *
-            uPixelRatio *
-            (
-              150.0 /
-              max(
-                1.0,
-                -mv.z
-              )
-            ) *
-            pulse;
-
-
-          gl_Position =
-            projectionMatrix *
-            mv;
-
-
-          vColor =
-            aColor;
-
-
-          vAlpha =
-            0.72 +
-            0.28 *
-            pulse;
-
-        }
-
-      `,
-
-
-      fragmentShader:`
-
-        varying vec3 vColor;
-
-        varying float vAlpha;
-
-
-        uniform float uOpacity;
-
-
-        void main(){
-
-          vec2 uv =
-            gl_PointCoord -
-            0.5;
-
-
-          float d =
-            length(uv);
-
-
-          float glow =
-            smoothstep(
-              0.5,
-              0.0,
-              d
-            );
-
-
-          float core =
-            smoothstep(
-              0.15,
-              0.0,
-              d
-            );
-
-
-          if (
-            glow <
-            0.01
-          )
-            discard;
-
-
-          vec3 finalColor =
-            vColor *
-            (
-              0.7 +
-              core *
-              1.5
-            );
-
-
-          gl_FragColor =
-            vec4(
-              finalColor,
-              glow *
-              vAlpha *
-              uOpacity
-            );
-
-        }
-
-      `
-
-    });
-
-
-  /* =======================================================
-     DNA OBJECT
-     ======================================================= */
-
-  const dna =
-    new THREE.Points(
-      geometry,
-      particleMaterial
-    );
-
-
-  dna.position.set(
-    3.0,
-    0.0,
-    0
-  );
-
-
-  scene.add(
-    dna
-  );
-
-
-  /* =======================================================
-     AMBIENT STARFIELD
-     ======================================================= */
-
-  const starCount =
-    isMobile
-      ? 500
-      : CFG.ambientStars;
-
-
-  const starPositions =
-    new Float32Array(
-      starCount * 3
-    );
-
-
-  for (
-    let i = 0;
-    i < starCount;
-    i++
-  ) {
-
-    const p =
-      i * 3;
-
-
-    const radius =
-      14 +
-      Math.random() *
-      20;
-
-
-    const angle =
-      Math.random() *
-      Math.PI *
-      2;
-
-
-    starPositions[p] =
-      Math.cos(angle) *
-      radius;
-
-
-    starPositions[p + 1] =
-      (
-        Math.random() -
-        0.5
-      ) *
-      18;
-
-
-    starPositions[p + 2] =
-      Math.sin(angle) *
-      radius -
-      8;
-  }
-
-
-  const starGeometry =
-    new THREE.BufferGeometry();
-
-
-  starGeometry.setAttribute(
-
-    "position",
-
+  sgeo.setAttribute(
+    "aEnergy",
     new THREE.BufferAttribute(
-      starPositions,
+      se,
+      1
+    )
+  );
+
+  sgeo.setAttribute(
+    "aColor",
+    new THREE.BufferAttribute(
+      sc,
       3
     )
-
   );
-
-
-  const starMaterial =
-    new THREE.PointsMaterial({
-
-      color:
-        0x9eeaff,
-
-      size:
-        isMobile
-          ? 0.018
-          : 0.026,
-
-      transparent:true,
-
-      opacity:
-        0.32,
-
-      depthWrite:false,
-
-      blending:
-        THREE.AdditiveBlending
-
-    });
 
 
   const stars =
     new THREE.Points(
-      starGeometry,
-      starMaterial
+      sgeo,
+      material
+    );
+
+  stars.frustumCulled = false;
+
+  scene.add(stars);
+
+
+  /* ---------- Neural graph + holographic rings ---------- */
+
+  const NN =
+    coarse || small
+      ? CFG.netNodesMobile
+      : CFG.netNodesDesktop;
+
+  const net =
+    new THREE.Group();
+
+  net.position.z = -8;
+
+  scene.add(net);
+
+
+  const np = [];
+
+  const nPos =
+    new Float32Array(
+      NN * 3
+    );
+
+  const nCol =
+    new Float32Array(
+      NN * 3
+    );
+
+  const nSize =
+    new Float32Array(NN);
+
+  const nSeed =
+    new Float32Array(NN);
+
+
+  const isHub =
+    i => i % 11 === 0;
+
+
+  for (let i = 0; i < NN; i++) {
+
+    const r =
+      5 +
+      Math.random() * 8;
+
+    const th =
+      Math.random() * 6.283;
+
+    const ph =
+      Math.acos(
+        2 * Math.random() - 1
+      );
+
+    const p = [
+      r *
+        Math.sin(ph) *
+        Math.cos(th),
+
+      r *
+        Math.sin(ph) *
+        Math.sin(th) *
+        0.8,
+
+      r *
+        Math.cos(ph)
+    ];
+
+
+    np.push(p);
+
+    nPos.set(
+      p,
+      i * 3
     );
 
 
-  scene.add(
-    stars
-  );
-
-
-  /* =======================================================
-     MOUSE
-     ======================================================= */
-
-  const mouse =
-    new THREE.Vector2(
-      999,
-      999
+    nCol.set(
+      isHub(i)
+        ? PAL.gold
+        : Math.random() < 0.7
+          ? PAL.cyan
+          : PAL.white,
+      i * 3
     );
 
 
-  const targetMouse =
-    new THREE.Vector2(
-      999,
-      999
-    );
+    nSize[i] =
+      isHub(i)
+        ? 5
+        : 1.6 +
+          Math.random() * 1.4;
 
-
-  const previousMouse =
-    new THREE.Vector2(
-      999,
-      999
-    );
-
-
-  let mouseSpeed = 0;
-
-
-  if (!coarsePointer) {
-
-    window.addEventListener(
-
-      "pointermove",
-
-      event => {
-
-        targetMouse.x =
-          (
-            event.clientX /
-            window.innerWidth
-          ) *
-          2 -
-          1;
-
-
-        targetMouse.y =
-          -(
-            event.clientY /
-            window.innerHeight
-          ) *
-          2 +
-          1;
-
-
-        if (cursorEl) {
-
-          cursorEl.classList.add(
-            "on"
-          );
-
-
-          cursorEl.style.left =
-            `${event.clientX}px`;
-
-
-          cursorEl.style.top =
-            `${event.clientY}px`;
-        }
-
-      },
-
-      {
-        passive:true
-      }
-
-    );
-
-
-    window.addEventListener(
-
-      "pointerleave",
-
-      () => {
-
-        targetMouse.set(
-          999,
-          999
-        );
-
-
-        if (cursorEl) {
-
-          cursorEl.classList.remove(
-            "on"
-          );
-        }
-
-      }
-
-    );
-
+    nSeed[i] =
+      Math.random();
   }
 
 
-  /* =======================================================
-     SCROLL
-     ======================================================= */
+  const ng =
+    new THREE.BufferGeometry();
 
-  let scrollProgress = 0;
+  ng.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+      nPos,
+      3
+    )
+  );
 
+  ng.setAttribute(
+    "aSize",
+    new THREE.BufferAttribute(
+      nSize,
+      1
+    )
+  );
 
-  window.addEventListener(
+  ng.setAttribute(
+    "aSeed",
+    new THREE.BufferAttribute(
+      nSeed,
+      1
+    )
+  );
 
-    "scroll",
+  ng.setAttribute(
+    "aEnergy",
+    new THREE.BufferAttribute(
+      new Float32Array(NN),
+      1
+    )
+  );
 
-    () => {
-
-      scrollProgress =
-        Math.min(
-
-          1,
-
-          Math.max(
-
-            0,
-
-            window.scrollY /
-            Math.max(
-              1,
-              window.innerHeight
-            )
-
-          )
-
-        );
-
-
-      if (navEl) {
-
-        navEl.classList.toggle(
-
-          "scrolled",
-
-          window.scrollY >
-          40
-
-        );
-
-      }
-
-    },
-
-    {
-      passive:true
-    }
-
+  ng.setAttribute(
+    "aColor",
+    new THREE.BufferAttribute(
+      nCol,
+      3
+    )
   );
 
 
-  /* =======================================================
-     INTRO → DASHBOARD HANDOFF
-     ======================================================= */
+  const nodes =
+    new THREE.Points(
+      ng,
+      netMat
+    );
 
-  /*
-    intro.js adds "intro-ready"
-    after the cinematic finishes.
+  nodes.frustumCulled = false;
 
-    Until then the DNA remains
-    almost invisible.
-  */
+  net.add(nodes);
 
 
-  function updateIntroOpacity() {
-
-    const intro =
-      document.getElementById(
-        "particle-intro"
-      );
+  const ev = [];
+  const ec = [];
 
 
-    if (
-      !intro ||
-      !document.body.classList.contains(
-        "intro-ready"
-      )
+  for (let i = 0; i < NN; i++) {
+
+    const d =
+      np
+        .map((q, j) => [
+          j,
+          (q[0] - np[i][0]) ** 2 +
+          (q[1] - np[i][1]) ** 2 +
+          (q[2] - np[i][2]) ** 2
+        ])
+        .sort(
+          (a, b) =>
+            a[1] - b[1]
+        );
+
+
+    for (
+      let k = 1;
+      k <= (isHub(i) ? 5 : 2);
+      k++
     ) {
 
-      particleMaterial
-        .uniforms
-        .uOpacity
-        .value =
-          0;
+      const j =
+        d[k][0];
+
+      const c =
+        isHub(i) ||
+        isHub(j)
+          ? PAL.gold
+          : PAL.cyan;
 
 
-      return;
+      ev.push(
+        ...np[i],
+        ...np[j]
+      );
+
+      ec.push(
+        ...c,
+        ...c
+      );
     }
-
-
-    /*
-      Fade DNA in gradually after
-      the cinematic intro.
-    */
-
-    particleMaterial
-      .uniforms
-      .uOpacity
-      .value =
-        THREE.MathUtils.lerp(
-
-          particleMaterial
-            .uniforms
-            .uOpacity
-            .value,
-
-          0.72,
-
-          0.025
-
-        );
   }
 
 
-  /* =======================================================
-     ANIMATION
-     ======================================================= */
+  const eg =
+    new THREE.BufferGeometry();
 
-  const clock =
-    new THREE.Clock();
+  eg.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(
+      ev,
+      3
+    )
+  );
 
-
-  function animate() {
-
-    requestAnimationFrame(
-      animate
-    );
-
-
-    const elapsed =
-      clock.getElapsedTime();
-
-
-    /*
-      Smooth mouse.
-    */
-
-    mouse.lerp(
-      targetMouse,
-      0.075
-    );
+  eg.setAttribute(
+    "color",
+    new THREE.Float32BufferAttribute(
+      ec,
+      3
+    )
+  );
 
 
-    mouseSpeed =
-      THREE.MathUtils.lerp(
+  const lineOpts = {
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  };
 
-        mouseSpeed,
 
-        mouse.distanceTo(
-          previousMouse
-        ),
+  const edgeMat =
+    new THREE.LineBasicMaterial({
+      vertexColors: true,
+      ...lineOpts
+    });
 
-        0.16
+  net.add(
+    new THREE.LineSegments(
+      eg,
+      edgeMat
+    )
+  );
 
+
+  /* ===== CYAN RINGS ===== */
+
+  const ringMat =
+    new THREE.LineBasicMaterial({
+      color:0x35d9ff,
+      ...lineOpts
+    });
+
+
+  const rings = [];
+  const ringGeos = [];
+
+
+  for (let k = 0; k < 3; k++) {
+
+    const pts = [];
+
+    const rr =
+      9 +
+      k * 2.2;
+
+
+    for (
+      let a = 0;
+      a < 128;
+      a++
+    ) {
+
+      const t =
+        (a / 128) *
+        6.283;
+
+      pts.push(
+        new THREE.Vector3(
+          Math.cos(t) * rr,
+          0,
+          Math.sin(t) * rr
+        )
       );
-
-
-    previousMouse.copy(
-      mouse
-    );
-
-
-    /*
-      Intro handoff.
-    */
-
-    updateIntroOpacity();
-
-
-    /*
-      If intro isn't finished,
-      keep background essentially
-      invisible.
-    */
-
-    const introReady =
-      document.body.classList.contains(
-        "intro-ready"
-      );
-
-
-    if (introReady) {
-
-      const pos =
-        geometry
-          .attributes
-          .position
-          .array;
-
-
-      /*
-        Cursor interaction.
-      */
-
-      const cursorX =
-        mouse.x *
-        5.7;
-
-
-      const cursorY =
-        mouse.y *
-        4.0;
-
-
-      for (
-        let i = 0;
-
-        i < PARTICLE_COUNT;
-
-        i++
-      ) {
-
-        const p =
-          i * 3;
-
-
-        const bx =
-          base[p];
-
-        const by =
-          base[p + 1];
-
-        const bz =
-          base[p + 2];
-
-
-        let x =
-          pos[p];
-
-        let y =
-          pos[p + 1];
-
-        let z =
-          pos[p + 2];
-
-
-        /*
-          Only interact when cursor
-          is actually inside viewport.
-        */
-
-        if (
-          mouse.x < 5
-        ) {
-
-          const dx =
-            x -
-            cursorX;
-
-
-          const dy =
-            y -
-            cursorY;
-
-
-          const distance =
-            Math.sqrt(
-              dx * dx +
-              dy * dy
-            );
-
-
-          if (
-            distance <
-            CFG.mouseRadius
-          ) {
-
-            const force =
-              Math.pow(
-
-                1 -
-                distance /
-                CFG.mouseRadius,
-
-                2
-
-              );
-
-
-            const push =
-              CFG.mouseStrength *
-              (
-                0.8 +
-                mouseSpeed *
-                2.5
-              );
-
-
-            x +=
-              (
-                dx /
-                (
-                  distance +
-                  0.0001
-                )
-              ) *
-              force *
-              push;
-
-
-            y +=
-              (
-                dy /
-                (
-                  distance +
-                  0.0001
-                )
-              ) *
-              force *
-              push;
-
-
-            z +=
-              force *
-              push *
-              Math.sin(
-                elapsed *
-                6 +
-                i *
-                0.012
-              );
-          }
-
-        }
-
-
-        /*
-          Spring back to original DNA.
-        */
-
-        const returnStrength =
-          0.055 +
-          Math.min(
-            mouseSpeed *
-            0.7,
-            0.08
-          );
-
-
-        pos[p] +=
-          (
-            bx +
-            x -
-            bx -
-            pos[p]
-          ) *
-          returnStrength;
-
-
-        pos[p + 1] +=
-          (
-            by +
-            y -
-            by -
-            pos[p + 1]
-          ) *
-          returnStrength;
-
-
-        pos[p + 2] +=
-          (
-            bz +
-            z -
-            bz -
-            pos[p + 2]
-          ) *
-          returnStrength;
-
-
-        /*
-          Very subtle biological motion.
-        */
-
-        if (!reduceMotion) {
-
-          pos[p] +=
-            Math.sin(
-              elapsed *
-              0.65 +
-              i *
-              0.009
-            ) *
-            0.00045;
-
-
-          pos[p + 1] +=
-            Math.cos(
-              elapsed *
-              0.5 +
-              i *
-              0.006
-            ) *
-            0.0003;
-        }
-
-      }
-
-
-      geometry
-        .attributes
-        .position
-        .needsUpdate =
-          true;
-
-
-      /*
-        DNA rotation.
-      */
-
-      if (!reduceMotion) {
-
-        dna.rotation.y =
-          elapsed *
-          CFG.rotationSpeed;
-
-
-        dna.rotation.x =
-          Math.sin(
-            elapsed *
-            0.28
-          ) *
-          0.025;
-
-
-        stars.rotation.y =
-          elapsed *
-          0.003;
-      }
-
-
-      /*
-        Slight hero parallax.
-      */
-
-      if (!reduceMotion) {
-
-        camera.position.x =
-          THREE.MathUtils.lerp(
-
-            camera.position.x,
-
-            mouse.x *
-            0.20,
-
-            0.025
-
-          );
-
-
-        camera.position.y =
-          THREE.MathUtils.lerp(
-
-            camera.position.y,
-
-            mouse.y *
-            0.10,
-
-            0.025
-
-          );
-
-      }
-
-
-      /*
-        Hero scroll movement.
-
-        DNA moves slightly upward
-        when leaving hero.
-      */
-
-      dna.position.y =
-        THREE.MathUtils.lerp(
-
-          dna.position.y,
-
-          -scrollProgress *
-          0.8,
-
-          0.025
-
-        );
-
-
-      dna.position.x =
-        THREE.MathUtils.lerp(
-
-          dna.position.x,
-
-          3.0 -
-          scrollProgress *
-          1.0,
-
-          0.025
-
-        );
-
-
     }
 
 
-    camera.lookAt(
-      0,
-      0,
+    const rg =
+      new THREE.BufferGeometry()
+        .setFromPoints(pts);
+
+    ringGeos.push(rg);
+
+
+    const ring =
+      new THREE.LineLoop(
+        rg,
+        ringMat
+      );
+
+    ring.rotation.set(
+      0.9 + k * 0.6,
+      k * 1.1,
       0
     );
 
+    net.add(ring);
 
-    renderer.render(
-      scene,
-      camera
-    );
-
+    rings.push(ring);
   }
 
 
-  /* =======================================================
-     RESIZE
-     ======================================================= */
+  /* ---------- State ---------- */
 
-  window.addEventListener(
+  const ndc = {
+    x:0,
+    y:0
+  };
 
-    "resize",
+  const mouse =
+    new THREE.Vector3();
 
-    () => {
+  const prevMouse =
+    new THREE.Vector3();
 
-      const w =
-        window.innerWidth;
+  const mVel =
+    new THREE.Vector3();
 
-      const h =
-        window.innerHeight;
-
-
-      camera.aspect =
-        w / h;
-
-
-      camera.updateProjectionMatrix();
+  const ray =
+    new THREE.Vector3();
 
 
-      const pixelRatio =
-        Math.min(
+  let active = false;
+  let scrollP = 0;
+  let page = 0;
+  let netAmt = 0;
+  let rot = 0;
+  let time = 0;
+  let last = performance.now();
+  let raf = 0;
 
-          window.devicePixelRatio ||
+  let live = N;
+  let slowFrames = 0;
+
+  let baseOx = 3.6;
+  let ox = 3.6;
+
+  let cx = innerWidth / 2;
+  let cy = innerHeight / 2;
+
+  let speed = 0;
+
+
+  function resize() {
+
+    const w = innerWidth;
+    const h = innerHeight;
+
+    renderer.setSize(
+      w,
+      h,
+      false
+    );
+
+    composer.setSize(
+      w,
+      h
+    );
+
+    bloom.setSize(
+      w,
+      h
+    );
+
+    camera.aspect =
+      w / h;
+
+    camera.updateProjectionMatrix();
+
+    baseOx =
+      camera.aspect > 1.15
+        ? 3.6
+        : 0;
+
+    updateScroll();
+
+    if (reduce)
+      frame(performance.now());
+  }
+
+
+  function updateScroll() {
+
+    scrollP =
+      clamp(
+        scrollY /
+        (innerHeight * 0.9),
+        0,
+        1
+      );
+
+    page =
+      clamp(
+        scrollY /
+        Math.max(
           1,
-
-          coarsePointer
-            ? 1.25
-            : 1.7
-
-        );
-
-
-      renderer.setPixelRatio(
-        pixelRatio
+          document.documentElement.scrollHeight -
+          innerHeight
+        ),
+        0,
+        1
       );
 
 
-      renderer.setSize(
-        w,
-        h,
-        false
+    hero.style.setProperty(
+      "--p",
+      scrollP.toFixed(3)
+    );
+
+
+    canvas.style.opacity =
+      String(
+        1 -
+        scrollP * 0.1
       );
 
 
-      particleMaterial
-        .uniforms
-        .uPixelRatio
-        .value =
-          pixelRatio;
+    camera.position.z =
+      20 +
+      scrollP * 4;
 
-    },
 
-    {
-      passive:true
+    material.uniforms.uDim.value =
+      1 -
+      scrollP * 0.2;
+
+
+    netAmt =
+      smooth(
+        clamp(
+          (
+            scrollY /
+            innerHeight -
+            0.35
+          ) / 0.9,
+          0,
+          1
+        )
+      );
+
+
+    if (navEl) {
+      navEl.classList.toggle(
+        "scrolled",
+        scrollY > 40
+      );
     }
+  }
 
-  );
+
+  function updateNet() {
+
+    net.visible =
+      netAmt > 0.01;
+
+    netMat.uniforms.uDim.value =
+      netAmt;
+
+    edgeMat.opacity =
+      netAmt * 0.28;
+
+    ringMat.opacity =
+      netAmt * 0.35;
 
 
-  /* =======================================================
-     VISIBILITY
-     ======================================================= */
+    net.rotation.y +=
+      (
+        time * 0.05 +
+        page * 3 +
+        ndc.x * 0.25 -
+        net.rotation.y
+      ) * 0.04;
 
-  document.addEventListener(
-    "visibilitychange",
-    () => {
 
-      if (
-        document.hidden
-      ) {
+    net.rotation.x +=
+      (
+        ndc.y * 0.12 +
+        0.2 -
+        net.rotation.x
+      ) * 0.04;
 
-        renderer.setAnimationLoop(
-          null
-        );
 
-      } else {
+    net.position.x =
+      Math.sin(page * 5) *
+      2.5;
 
-        renderer.setAnimationLoop(
-          animate
-        );
 
+    rings.forEach(
+      (r, i) => {
+        r.rotation.z =
+          time *
+          (0.08 + i * 0.03);
+      }
+    );
+  }
+
+
+  function mouseWorld() {
+
+    ray
+      .set(
+        ndc.x,
+        ndc.y,
+        0.5
+      )
+      .unproject(camera)
+      .sub(camera.position)
+      .normalize();
+
+
+    mouse
+      .copy(camera.position)
+      .addScaledVector(
+        ray,
+        -camera.position.z /
+        ray.z
+      );
+  }
+
+
+  function step(dt) {
+
+    const K =
+      reduce
+        ? 0
+        : 1.4 +
+          3.6 *
+          Math.min(
+            1,
+            time / 3
+          ) *
+          (CFG.spring / 5);
+
+
+    const C =
+      CFG.damping;
+
+    const R2 =
+      CFG.fieldRadius *
+      CFG.fieldRadius;
+
+
+    const breathe =
+      reduce
+        ? 1
+        : 1 +
+          0.025 *
+          Math.sin(
+            time * 0.6
+          );
+
+
+    const ct =
+      Math.cos(TILT);
+
+    const st =
+      Math.sin(TILT);
+
+
+    const oy =
+      scrollP * 3;
+
+    const baseRot =
+      rot +
+      page * 6;
+
+
+    const bc =
+      Math.cos(baseRot);
+
+    const bs =
+      Math.sin(baseRot);
+
+
+    const push =
+      active
+        ? CFG.fieldPush *
+          clamp(
+            speed * 0.3,
+            0,
+            1
+          )
+        : 0;
+
+
+    const swirl =
+      push *
+      CFG.fieldSwirl;
+
+
+    const mx = mouse.x;
+    const my = mouse.y;
+    const mz = mouse.z;
+
+    const vx0 =
+      mVel.x * 2.5;
+
+    const vy0 =
+      mVel.y * 2.5;
+
+
+    for (
+      let i = 0;
+      i < live;
+      i++
+    ) {
+
+      const j =
+        i * 3;
+
+
+      let cc = bc;
+      let ss2 = bs;
+
+
+      if (spd[i] !== 0) {
+
+        const a =
+          baseRot +
+          spd[i] * time;
+
+        cc =
+          Math.cos(a);
+
+        ss2 =
+          Math.sin(a);
       }
 
+
+      const x =
+        rest[j] *
+        breathe;
+
+      const y =
+        rest[j + 1];
+
+      const z =
+        rest[j + 2] *
+        breathe;
+
+
+      const rx =
+        x * cc +
+        z * ss2;
+
+      const rz =
+        -x * ss2 +
+        z * cc;
+
+
+      const tx =
+        rx * ct -
+        y * st +
+        ox;
+
+      const ty =
+        rx * st +
+        y * ct +
+        oy;
+
+      const tz =
+        rz;
+
+
+      if (reduce) {
+
+        pos[j] =
+          tx;
+
+        pos[j + 1] =
+          ty;
+
+        pos[j + 2] =
+          tz;
+
+        energy[i] =
+          0;
+
+        continue;
+      }
+
+
+      let X =
+        pos[j];
+
+      let Y =
+        pos[j + 1];
+
+      let Z =
+        pos[j + 2];
+
+
+      let ax =
+        (tx - X) * K -
+        vel[j] * C;
+
+      let ay =
+        (ty - Y) * K -
+        vel[j + 1] * C;
+
+      let az =
+        (tz - Z) * K -
+        vel[j + 2] * C;
+
+
+      if (push > 0) {
+
+        const dx =
+          X - mx;
+
+        const dy =
+          Y - my;
+
+        const dz =
+          (Z - mz) * 0.6;
+
+
+        const d2 =
+          dx * dx +
+          dy * dy +
+          dz * dz;
+
+
+        if (
+          d2 <
+          R2 * 4
+        ) {
+
+          const f =
+            Math.exp(
+              -d2 / R2
+            );
+
+          const inv =
+            1 /
+            (
+              Math.sqrt(d2) +
+              0.001
+            );
+
+
+          ax +=
+            dx *
+            inv *
+            f *
+            push -
+
+            dy *
+            inv *
+            f *
+            swirl +
+
+            vx0 *
+            f;
+
+
+          ay +=
+            dy *
+            inv *
+            f *
+            push +
+
+            dx *
+            inv *
+            f *
+            swirl +
+
+            vy0 *
+            f;
+
+
+          az +=
+            dz *
+            inv *
+            f *
+            push *
+            0.5;
+        }
+      }
+
+
+      vel[j] +=
+        ax * dt;
+
+      vel[j + 1] +=
+        ay * dt;
+
+      vel[j + 2] +=
+        az * dt;
+
+
+      X +=
+        vel[j] *
+        dt;
+
+      Y +=
+        vel[j + 1] *
+        dt;
+
+      Z +=
+        vel[j + 2] *
+        dt;
+
+
+      pos[j] =
+        X;
+
+      pos[j + 1] =
+        Y;
+
+      pos[j + 2] =
+        Z;
+
+
+      energy[i] +=
+        (
+          Math.min(
+            1,
+            Math.hypot(
+              tx - X,
+              ty - Y,
+              tz - Z
+            ) * 0.6
+          ) -
+          energy[i]
+        ) * 0.18;
+    }
+
+
+    posAttr.needsUpdate =
+      true;
+
+    enAttr.needsUpdate =
+      true;
+  }
+
+
+  function frame(now) {
+
+    raf = 0;
+
+    const dt =
+      Math.min(
+        0.033,
+        (now - last) /
+        1000 ||
+        0.016
+      );
+
+    last =
+      now;
+
+
+    if (!reduce) {
+
+      time += dt;
+
+      rot +=
+        dt *
+        CFG.rotateSpeed;
+    }
+
+
+    uTime.value =
+      time;
+
+
+    stars.rotation.y =
+      time * 0.01 +
+      page * 0.8;
+
+
+    ox =
+      baseOx *
+      Math.cos(
+        page * 6.5
+      );
+
+
+    updateNet();
+
+
+    if (active) {
+
+      mouseWorld();
+
+      mVel
+        .copy(mouse)
+        .sub(prevMouse)
+        .multiplyScalar(
+          1 /
+          Math.max(
+            dt,
+            0.001
+          )
+        );
+
+
+      speed +=
+        (
+          mVel.length() -
+          speed
+        ) * 0.2;
+
+
+      prevMouse.copy(
+        mouse
+      );
+
+    } else {
+
+      speed *= 0.85;
+
+      mVel.multiplyScalar(
+        0.85
+      );
+    }
+
+
+    step(dt);
+
+    geo.setDrawRange(
+      0,
+      live
+    );
+
+    composer.render();
+
+
+    if (
+      cursorEl &&
+      !coarse
+    ) {
+
+      cx +=
+        (
+          (
+            ndc.x + 1
+          ) / 2 *
+          innerWidth -
+          cx
+        ) * 0.2;
+
+
+      cy +=
+        (
+          (
+            1 - ndc.y
+          ) / 2 *
+          innerHeight -
+          cy
+        ) * 0.2;
+
+
+      cursorEl.style.transform =
+        `translate(${cx}px,${cy}px) scale(${1 + clamp(speed * 0.08, 0, 0.5)})`;
+    }
+
+
+    if (
+      !reduce &&
+      time > 3
+    ) {
+
+      slowFrames =
+        dt > 1 / 38
+          ? slowFrames + 1
+          : Math.max(
+              0,
+              slowFrames - 1
+            );
+
+
+      if (
+        slowFrames > 90 &&
+        live > 8000
+      ) {
+
+        live =
+          Math.max(
+            8000,
+            Math.floor(
+              live * 0.7
+            )
+          );
+
+        slowFrames = 0;
+      }
+    }
+
+
+    if (!reduce) {
+      raf =
+        requestAnimationFrame(
+          frame
+        );
+    }
+  }
+
+
+  const start = () => {
+
+    if (!raf) {
+
+      last =
+        performance.now();
+
+      raf =
+        requestAnimationFrame(
+          frame
+        );
+    }
+  };
+
+
+  /* ---------- Events ---------- */
+
+  const onMove = e => {
+
+    if (reduce)
+      return;
+
+
+    ndc.x =
+      (
+        e.clientX /
+        innerWidth
+      ) * 2 - 1;
+
+
+    ndc.y =
+      -(
+        (
+          e.clientY /
+          innerHeight
+        ) * 2 - 1
+      );
+
+
+    if (!active) {
+
+      mouseWorld();
+
+      prevMouse.copy(
+        mouse
+      );
+
+      cx =
+        e.clientX;
+
+      cy =
+        e.clientY;
+    }
+
+
+    active = true;
+
+    if (cursorEl)
+      cursorEl.classList.add("on");
+  };
+
+
+  const onLeave = () => {
+
+    active = false;
+
+    if (cursorEl)
+      cursorEl.classList.remove("on");
+  };
+
+
+  const onUp = e => {
+
+    if (
+      e.pointerType ===
+      "touch"
+    ) {
+      onLeave();
+    }
+  };
+
+
+  const onScroll = () => {
+
+    updateScroll();
+
+    if (reduce)
+      frame(
+        performance.now()
+      );
+  };
+
+
+  addEventListener(
+    "pointermove",
+    onMove,
+    { passive:true }
+  );
+
+  addEventListener(
+    "pointerup",
+    onUp,
+    { passive:true }
+  );
+
+  document.documentElement
+    .addEventListener(
+      "mouseleave",
+      onLeave
+    );
+
+  addEventListener(
+    "scroll",
+    onScroll,
+    { passive:true }
+  );
+
+  addEventListener(
+    "resize",
+    resize
+  );
+
+
+  canvas.addEventListener(
+    "webglcontextlost",
+    e => {
+
+      e.preventDefault();
+
+      cancelAnimationFrame(
+        raf
+      );
+
+      document.body.classList.add(
+        "no-webgl"
+      );
     }
   );
 
 
-  /* =======================================================
-     START
-     ======================================================= */
+  function dispose() {
 
-  animate();
+    cancelAnimationFrame(
+      raf
+    );
 
+
+    removeEventListener(
+      "pointermove",
+      onMove
+    );
+
+    removeEventListener(
+      "pointerup",
+      onUp
+    );
+
+    removeEventListener(
+      "scroll",
+      onScroll
+    );
+
+    removeEventListener(
+      "resize",
+      resize
+    );
+
+
+    [
+      geo,
+      sgeo,
+      ng,
+      eg,
+      ...ringGeos,
+      material,
+      netMat,
+      edgeMat,
+      ringMat
+    ].forEach(
+      o => o.dispose()
+    );
+
+
+    composer.dispose();
+    renderer.dispose();
+  }
+
+
+  addEventListener(
+    "pagehide",
+    dispose,
+    { once:true }
+  );
+
+
+  resize();
+
+  if (reduce)
+    frame(performance.now());
+  else
+    start();
 }
+
+
+const boot = () =>
+  initHero().catch(
+    err => {
+
+      document.body.classList.add(
+        "no-webgl"
+      );
+
+      console.warn(err);
+    }
+  );
+
+
+document.readyState === "complete"
+  ? boot()
+  : addEventListener(
+      "load",
+      boot,
+      { once:true }
+    );
+
+
+/* ---------- Light / night toggle ---------- */
+
+(function () {
+
+  const root =
+    document.documentElement;
+
+  const nav =
+    document.querySelector(
+      ".nav"
+    );
+
+  const meta =
+    document.querySelector(
+      'meta[name="theme-color"]'
+    );
+
+
+  const get = () => {
+
+    try {
+      return localStorage.getItem(
+        "theme"
+      );
+    } catch {
+      return null;
+    }
+  };
+
+
+  const put = v => {
+
+    try {
+      localStorage.setItem(
+        "theme",
+        v
+      );
+    } catch {}
+  };
+
+
+  const btn =
+    document.createElement(
+      "button"
+    );
+
+
+  btn.className =
+    "theme-toggle";
+
+  btn.type =
+    "button";
+
+
+  function apply(t) {
+
+    root.dataset.theme =
+      t;
+
+
+    btn.textContent =
+      t === "light"
+        ? "☾ Night"
+        : "☀ Light";
+
+
+    btn.setAttribute(
+      "aria-label",
+      t === "light"
+        ? "Switch to night mode"
+        : "Switch to light mode"
+    );
+
+
+    if (meta) {
+
+      meta.content =
+        t === "light"
+          ? "#eef7ff"
+          : "#071426";
+    }
+  }
+
+
+  apply(
+    get() === "light"
+      ? "light"
+      : "dark"
+  );
+
+
+  btn.addEventListener(
+    "click",
+    () => {
+
+      const n =
+        root.dataset.theme ===
+        "light"
+          ? "dark"
+          : "light";
+
+      apply(n);
+      put(n);
+    }
+  );
+
+
+  if (nav)
+    nav.appendChild(btn);
+
+})();
