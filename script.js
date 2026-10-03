@@ -65,11 +65,12 @@ async function initHero() {
   const lowEnd = (navigator.hardwareConcurrency || 4) <= 4;
   const override = Number(new URLSearchParams(location.search).get("particles"));
   const N = override > 0 ? override : (coarse || small) ? CFG.particlesMobile : lowEnd ? CFG.particlesLowEnd : CFG.particlesDesktop;
-  document.getElementById("hud-count").textContent = N.toLocaleString("en-US");
+  const countEl = document.getElementById("hud-count");
+  if (countEl) countEl.textContent = N.toLocaleString("en-US");
 
   const dpr = Math.min(devicePixelRatio || 1, coarse ? 1.25 : 1.75);
   renderer.setPixelRatio(dpr);
-  renderer.setClearColor(0x02040a, 1);
+  renderer.setClearColor(0x050403, 1);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 300);
@@ -111,7 +112,8 @@ async function initHero() {
 
   /* ----- DNA ----- */
   const R = 1.7, H = 20, TURNS = 5, RUNGS = 70, TILT = 0.32;
-  const PAL = { cyan: [0.13, 0.83, 0.93], blue: [0.23, 0.51, 0.96], white: [0.9, 0.95, 1], gold: [1, 0.7, 0.28] };
+  // amber palette (key names kept so the rest of the code is unchanged)
+  const PAL = { cyan: [1, 0.72, 0.3], blue: [1, 0.5, 0.18], white: [1, 0.94, 0.85], gold: [1, 0.85, 0.5] };
   const g = () => (Math.random() + Math.random() + Math.random() - 1.5) * 0.8;
   const strand = (t, ph) => { const a = t * TURNS * Math.PI * 2 + ph; return [R * Math.cos(a), (t - 0.5) * H, R * Math.sin(a)]; };
 
@@ -159,7 +161,7 @@ async function initHero() {
     const dust = i >= SN, rad = 45 + Math.random() * 70, th = Math.random() * 6.283, ph = Math.acos(2 * Math.random() - 1);
     sp.set([rad * Math.sin(ph) * Math.cos(th), rad * Math.sin(ph) * Math.sin(th) * 0.7, -Math.abs(rad * Math.cos(ph)) - 10], i * 3);
     ss[i] = dust ? 26 + Math.random() * 20 : 0.5 + Math.random() * 0.9; sd[i] = Math.random();
-    const b = dust ? 0.05 : 0.35 + Math.random() * 0.4; sc.set([b * 0.7, b * 0.9, b], i * 3);
+    const b = dust ? 0.05 : 0.35 + Math.random() * 0.4; sc.set([b, b * 0.85, b * 0.65], i * 3);
   }
   const sgeo = new THREE.BufferGeometry();
   sgeo.setAttribute("position", new THREE.BufferAttribute(sp, 3));
@@ -237,7 +239,7 @@ async function initHero() {
     camera.position.z = 20 + scrollP * 4;
     material.uniforms.uDim.value = 1 - scrollP * 0.55;
     netAmt = smooth(clamp((scrollY / innerHeight - 0.35) / 0.9, 0, 1));
-    navEl.classList.toggle("scrolled", scrollY > 40);
+    if (navEl) navEl.classList.toggle("scrolled", scrollY > 40);
   }
 
   function updateNet() {
