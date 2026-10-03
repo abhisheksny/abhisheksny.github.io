@@ -1,4 +1,11 @@
 /* =========================================================
+   ABHISHEK KUMAR
+   FUTURISTIC BIOINFORMATICS HUD PORTFOLIO
+   COMPLETE CSS
+========================================================= */
+
+
+/* =========================================================
    01. GLOBAL RESET
 ========================================================= */
 
@@ -8,38 +15,27 @@
     box-sizing: border-box;
 }
 
-
 html {
     scroll-behavior: smooth;
 }
 
-
 :root {
-
     color-scheme: dark;
 
     --bg: #020509;
-
     --surface: rgba(5, 15, 28, 0.72);
-
     --surface-2: rgba(0, 243, 255, 0.07);
-
     --surface-3: rgba(255, 255, 255, 0.025);
 
     --text: #c7d2fe;
-
     --text-bright: #ffffff;
-
     --muted: #657892;
 
     --line: rgba(0, 243, 255, 0.20);
-
     --line-bright: rgba(0, 243, 255, 0.50);
 
     --accent: #00f3ff;
-
     --accent-2: #00ffaa;
-
     --pink: #ff0077;
 
     --accent-glow: rgba(0, 243, 255, 0.30);
@@ -54,9 +50,7 @@ html {
         0 0 30px rgba(0, 243, 255, 0.12);
 }
 
-
 body {
-
     margin: 0;
 
     background:
@@ -76,6 +70,8 @@ body {
     letter-spacing: 0.04em;
 
     overflow-x: hidden;
+
+    min-height: 100vh;
 }
 
 
@@ -84,9 +80,7 @@ body {
 ========================================================= */
 
 .background-grid {
-
     position: fixed;
-
     inset: 0;
 
     pointer-events: none;
@@ -94,12 +88,10 @@ body {
     z-index: -5;
 
     background-image:
-
         linear-gradient(
             rgba(0, 243, 255, 0.025) 1px,
             transparent 1px
         ),
-
         linear-gradient(
             90deg,
             rgba(0, 243, 255, 0.025) 1px,
@@ -122,9 +114,7 @@ body {
 ========================================================= */
 
 .scanlines {
-
     position: fixed;
-
     inset: 0;
 
     pointer-events: none;
@@ -148,11 +138,9 @@ body {
 ========================================================= */
 
 .cursor-glow {
-
     position: fixed;
 
     width: 300px;
-
     height: 300px;
 
     border-radius: 50%;
@@ -167,7 +155,7 @@ body {
     background:
         radial-gradient(
             circle,
-            rgba(0, 243, 255, 0.06),
+            rgba(0, 243, 255, 0.07),
             transparent 70%
         );
 
@@ -178,13 +166,11 @@ body {
 
 
 /* =========================================================
-   05. SELECTION
+   05. TEXT SELECTION
 ========================================================= */
 
 ::selection {
-
     background: var(--accent);
-
     color: var(--bg);
 }
 
@@ -194,9 +180,7 @@ body {
 ========================================================= */
 
 a {
-
     color: inherit;
-
     text-decoration: none;
 
     transition:
@@ -207,9 +191,7 @@ a {
         transform 0.25s ease;
 }
 
-
 a:hover {
-
     color: var(--accent);
 
     text-shadow:
@@ -222,7 +204,6 @@ a:hover {
 ========================================================= */
 
 .hud-clip {
-
     position: relative;
 
     clip-path:
@@ -248,9 +229,11 @@ a:hover {
     backdrop-filter:
         blur(15px);
 
+    -webkit-backdrop-filter:
+        blur(15px);
+
     box-shadow:
         var(--shadow);
-
 }
 
 
@@ -259,9 +242,7 @@ a:hover {
 ========================================================= */
 
 .pulse-dot {
-
     width: 8px;
-
     height: 8px;
 
     flex-shrink: 0;
@@ -280,33 +261,25 @@ a:hover {
         corePulse 2s infinite;
 }
 
-
 @keyframes corePulse {
 
     0% {
-
         box-shadow:
             0 0 0 0
             rgba(0, 243, 255, 0.7);
-
     }
 
     70% {
-
         box-shadow:
             0 0 0 10px
             rgba(0, 243, 255, 0);
-
     }
 
     100% {
-
         box-shadow:
             0 0 0 0
             rgba(0, 243, 255, 0);
-
     }
-
 }
 
 
@@ -315,7 +288,6 @@ a:hover {
 ========================================================= */
 
 .hero {
-
     min-height: 92vh;
 
     border-bottom:
@@ -337,20 +309,23 @@ a:hover {
         hidden;
 }
 
-
 .hero::before {
-
     content: "";
 
-    position: absolute;
+    position:
+        absolute;
 
-    top: -20%;
+    top:
+        -20%;
 
-    right: -10%;
+    right:
+        -10%;
 
-    width: 60vw;
+    width:
+        60vw;
 
-    height: 60vw;
+    height:
+        60vw;
 
     background:
         radial-gradient(
@@ -359,23 +334,27 @@ a:hover {
             transparent 70%
         );
 
-    pointer-events: none;
+    pointer-events:
+        none;
 }
 
-
 .hero::after {
-
     content: "";
 
-    position: absolute;
+    position:
+        absolute;
 
-    left: 0;
+    left:
+        0;
 
-    right: 0;
+    right:
+        0;
 
-    bottom: 0;
+    bottom:
+        0;
 
-    height: 1px;
+    height:
+        1px;
 
     background:
         linear-gradient(
@@ -395,14 +374,17 @@ a:hover {
 ========================================================= */
 
 .nav {
+    width:
+        100%;
 
-    width: 100%;
+    max-width:
+        1180px;
 
-    max-width: 1180px;
+    margin:
+        0 auto;
 
-    margin: 0 auto;
-
-    padding: 22px 0;
+    padding:
+        22px 0;
 
     display:
         flex;
@@ -424,12 +406,12 @@ a:hover {
         5;
 }
 
-
 .logo {
+    width:
+        48px;
 
-    width: 48px;
-
-    height: 48px;
+    height:
+        48px;
 
     border:
         1px solid var(--accent);
@@ -457,24 +439,21 @@ a:hover {
         relative;
 }
 
-
 .logo::before {
-
     content: "";
 
-    position: absolute;
+    position:
+        absolute;
 
-    inset: 5px;
+    inset:
+        5px;
 
     border:
         1px dashed
         rgba(0, 243, 255, 0.4);
-
 }
 
-
 .links {
-
     display:
         flex;
 
@@ -488,21 +467,17 @@ a:hover {
         0.85rem;
 }
 
-
 .links a:hover {
-
     color:
         var(--accent);
-
 }
 
 
 /* =========================================================
-   11. THEME BUTTON
+   11. CORE TOGGLE
 ========================================================= */
 
 .theme-toggle {
-
     border:
         1px solid var(--line);
 
@@ -537,16 +512,13 @@ a:hover {
         0.3s ease;
 }
 
-
 .theme-toggle:hover {
-
     background:
         var(--surface-2);
 
     box-shadow:
         0 0 15px
         var(--accent-glow);
-
 }
 
 
@@ -555,7 +527,6 @@ a:hover {
 ========================================================= */
 
 .hero-layout {
-
     display:
         grid;
 
@@ -579,7 +550,6 @@ a:hover {
 
     gap:
         60px;
-
 }
 
 
@@ -588,7 +558,6 @@ a:hover {
 ========================================================= */
 
 .hero-content {
-
     position:
         relative;
 
@@ -596,9 +565,7 @@ a:hover {
         2;
 }
 
-
 .eyebrow {
-
     color:
         var(--accent);
 
@@ -616,9 +583,7 @@ a:hover {
         var(--accent-glow);
 }
 
-
 .system-label {
-
     display:
         inline-flex;
 
@@ -645,9 +610,7 @@ a:hover {
         0.7rem;
 }
 
-
 .status-indicator {
-
     width:
         5px;
 
@@ -665,9 +628,7 @@ a:hover {
         var(--accent-2);
 }
 
-
 h1 {
-
     font-size:
         clamp(3rem, 7vw, 6.5rem);
 
@@ -688,9 +649,7 @@ h1 {
         rgba(255,255,255,0.08);
 }
 
-
 h1 span {
-
     display:
         block;
 
@@ -705,9 +664,7 @@ h1 span {
         rgba(0, 243, 255, 0.18);
 }
 
-
 .intro {
-
     max-width:
         680px;
 
@@ -730,7 +687,6 @@ h1 span {
 ========================================================= */
 
 .buttons {
-
     display:
         flex;
 
@@ -741,9 +697,7 @@ h1 span {
         wrap;
 }
 
-
 .button {
-
     padding:
         13px 22px;
 
@@ -767,12 +721,9 @@ h1 span {
 
     display:
         inline-block;
-
 }
 
-
 .button.primary {
-
     background:
         var(--accent);
 
@@ -790,9 +741,7 @@ h1 span {
         var(--accent-glow);
 }
 
-
 .button.primary:hover {
-
     background:
         transparent;
 
@@ -804,15 +753,12 @@ h1 span {
         var(--accent);
 }
 
-
 .button.secondary:hover {
-
     background:
         rgba(0, 243, 255, 0.08);
 
     border-color:
         var(--accent);
-
 }
 
 
@@ -821,7 +767,6 @@ h1 span {
 ========================================================= */
 
 .hero-hud {
-
     height:
         430px;
 
@@ -838,9 +783,7 @@ h1 span {
         center;
 }
 
-
 .hud-circle {
-
     width:
         330px;
 
@@ -867,9 +810,7 @@ h1 span {
         slowRotate 30s linear infinite;
 }
 
-
 .hud-circle-inner {
-
     width:
         210px;
 
@@ -894,9 +835,7 @@ h1 span {
         rgba(0, 243, 255, 0.06);
 }
 
-
 .hud-core {
-
     width:
         110px;
 
@@ -933,9 +872,7 @@ h1 span {
         coreFloat 3s ease-in-out infinite;
 }
 
-
 .orbit {
-
     position:
         absolute;
 
@@ -945,12 +882,9 @@ h1 span {
 
     border-radius:
         50%;
-
 }
 
-
 .orbit-1 {
-
     width:
         390px;
 
@@ -964,9 +898,7 @@ h1 span {
         rotateOrbit 12s linear infinite;
 }
 
-
 .orbit-2 {
-
     width:
         390px;
 
@@ -980,9 +912,7 @@ h1 span {
         rotateOrbitReverse 16s linear infinite;
 }
 
-
 .orbit-3 {
-
     width:
         290px;
 
@@ -996,39 +926,28 @@ h1 span {
         rotateOrbit 20s linear infinite;
 }
 
-
 @keyframes slowRotate {
-
     to {
         transform:
             rotate(360deg);
     }
-
 }
 
-
 @keyframes rotateOrbit {
-
     to {
         transform:
             rotate(390deg);
     }
-
 }
 
-
 @keyframes rotateOrbitReverse {
-
     to {
         transform:
             rotate(-390deg);
     }
-
 }
 
-
 @keyframes coreFloat {
-
     0%,
     100% {
         transform:
@@ -1039,12 +958,14 @@ h1 span {
         transform:
             scale(1.06);
     }
-
 }
 
 
-.hud-data {
+/* =========================================================
+   16. HUD DATA
+========================================================= */
 
+.hud-data {
     position:
         absolute;
 
@@ -1069,20 +990,14 @@ h1 span {
 
     padding-left:
         8px;
-
 }
-
 
 .hud-data strong {
-
     color:
         var(--accent);
-
 }
 
-
 .data-1 {
-
     top:
         30px;
 
@@ -1090,9 +1005,7 @@ h1 span {
         0;
 }
 
-
 .data-2 {
-
     right:
         0;
 
@@ -1100,9 +1013,7 @@ h1 span {
         100px;
 }
 
-
 .data-3 {
-
     bottom:
         40px;
 
@@ -1112,11 +1023,10 @@ h1 span {
 
 
 /* =========================================================
-   16. HERO META
+   17. HERO META
 ========================================================= */
 
 .hero-meta {
-
     display:
         flex;
 
@@ -1135,12 +1045,9 @@ h1 span {
 
     width:
         100%;
-
 }
 
-
 .hero-meta span {
-
     padding:
         15px 25px 0 0;
 
@@ -1149,24 +1056,19 @@ h1 span {
 
     font-size:
         0.72rem;
-
 }
 
-
 .hero-meta strong {
-
     color:
         var(--accent);
-
 }
 
 
 /* =========================================================
-   17. MAIN
+   18. MAIN
 ========================================================= */
 
 main {
-
     width:
         min(1180px, 86vw);
 
@@ -1175,8 +1077,11 @@ main {
 }
 
 
-section {
+/* =========================================================
+   19. SECTIONS
+========================================================= */
 
+section {
     padding:
         100px 0;
 
@@ -1195,9 +1100,7 @@ section {
         transform 0.8s ease;
 }
 
-
 section.visible {
-
     opacity:
         1;
 
@@ -1207,11 +1110,10 @@ section.visible {
 
 
 /* =========================================================
-   18. SECTION HEADING
+   20. SECTION HEADING
 ========================================================= */
 
 .section-heading {
-
     display:
         grid;
 
@@ -1223,23 +1125,17 @@ section.visible {
 
     margin-bottom:
         45px;
-
 }
 
-
 .section-heading span {
-
     color:
         var(--accent);
 
     font-size:
         0.75rem;
-
 }
 
-
 .section-heading h2 {
-
     font-size:
         clamp(1.8rem, 3.5vw, 2.7rem);
 
@@ -1256,11 +1152,10 @@ section.visible {
 
 
 /* =========================================================
-   19. JARVIS CORE
+   21. JARVIS CORE
 ========================================================= */
 
 .jarvis-core-analytics {
-
     margin:
         60px 0;
 
@@ -1268,9 +1163,7 @@ section.visible {
         30px;
 }
 
-
 .core-header {
-
     display:
         flex;
 
@@ -1291,9 +1184,7 @@ section.visible {
         30px;
 }
 
-
 .core-title {
-
     display:
         flex;
 
@@ -1313,9 +1204,7 @@ section.visible {
         2px;
 }
 
-
 .live-time {
-
     color:
         var(--muted);
 
@@ -1323,9 +1212,7 @@ section.visible {
         0.65rem;
 }
 
-
 .jarvis-split-layout {
-
     display:
         grid;
 
@@ -1341,11 +1228,10 @@ section.visible {
 
 
 /* =========================================================
-   20. HOLOGRAM
+   22. HOLOGRAM VIEWPORT
 ========================================================= */
 
 .hologram-viewport {
-
     height:
         350px;
 
@@ -1376,9 +1262,31 @@ section.visible {
         hidden;
 }
 
+.hologram-viewport::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        linear-gradient(
+            transparent 49%,
+            rgba(0, 243, 255, 0.05) 50%,
+            transparent 51%
+        );
+
+    background-size:
+        100% 8px;
+
+    pointer-events:
+        none;
+}
 
 .holo-emitter {
-
     position:
         absolute;
 
@@ -1402,9 +1310,7 @@ section.visible {
         blur(3px);
 }
 
-
 .holo-ring {
-
     position:
         absolute;
 
@@ -1422,9 +1328,7 @@ section.visible {
         rotateX(65deg);
 }
 
-
 .outer-layer {
-
     width:
         290px;
 
@@ -1438,9 +1342,7 @@ section.visible {
         rotateCW 20s linear infinite;
 }
 
-
 .mid-layer {
-
     width:
         210px;
 
@@ -1454,9 +1356,7 @@ section.visible {
         rotateCCW 12s linear infinite;
 }
 
-
 .inner-layer {
-
     width:
         145px;
 
@@ -1470,35 +1370,28 @@ section.visible {
         rotateCW 6s linear infinite;
 }
 
-
 @keyframes rotateCW {
-
     to {
         transform:
             rotate(360deg)
             rotateX(65deg);
     }
-
 }
 
-
 @keyframes rotateCCW {
-
     to {
         transform:
             rotate(-360deg)
             rotateX(65deg);
     }
-
 }
 
 
 /* =========================================================
-   21. DNA HELIX
+   23. DNA HELIX
 ========================================================= */
 
 .dna-helix-simulation {
-
     position:
         absolute;
 
@@ -1512,9 +1405,7 @@ section.visible {
         rotateX(20deg);
 }
 
-
 .helix-strand {
-
     width:
         5px;
 
@@ -1541,10 +1432,8 @@ section.visible {
         rgba(0, 243, 255, 0.3);
 }
 
-
 .helix-strand::before,
 .helix-strand::after {
-
     content:
         "";
 
@@ -1568,9 +1457,7 @@ section.visible {
         var(--accent);
 }
 
-
 .helix-strand::before {
-
     top:
         0;
 
@@ -1578,9 +1465,7 @@ section.visible {
         var(--accent);
 }
 
-
 .helix-strand::after {
-
     bottom:
         0;
 
@@ -1588,11 +1473,9 @@ section.visible {
         var(--pink);
 }
 
-
 @keyframes helixWave {
 
     0% {
-
         transform:
             scaleY(0.3)
             rotate(0deg);
@@ -1602,7 +1485,6 @@ section.visible {
     }
 
     100% {
-
         transform:
             scaleY(1.2)
             rotate(180deg);
@@ -1610,12 +1492,14 @@ section.visible {
         opacity:
             1;
     }
-
 }
 
 
-.holo-readout {
+/* =========================================================
+   24. HOLOGRAM TEXT
+========================================================= */
 
+.holo-readout {
     position:
         absolute;
 
@@ -1635,7 +1519,6 @@ section.visible {
         textFlash 1s ease infinite alternate;
 }
 
-
 @keyframes textFlash {
 
     from {
@@ -1647,12 +1530,9 @@ section.visible {
         opacity:
             1;
     }
-
 }
 
-
 .holo-label {
-
     position:
         absolute;
 
@@ -1666,9 +1546,7 @@ section.visible {
         2px;
 }
 
-
 .label-top {
-
     top:
         20px;
 
@@ -1676,9 +1554,7 @@ section.visible {
         20px;
 }
 
-
 .label-bottom {
-
     bottom:
         20px;
 
@@ -1688,11 +1564,10 @@ section.visible {
 
 
 /* =========================================================
-   22. TERMINAL
+   25. TERMINAL
 ========================================================= */
 
 .recruiter-hud-logs h4 {
-
     margin:
         0 0 15px;
 
@@ -1710,9 +1585,7 @@ section.visible {
         10px;
 }
 
-
 .hud-log-stream {
-
     background:
         rgba(0, 0, 0, 0.45);
 
@@ -1736,17 +1609,12 @@ section.visible {
         #929dac;
 }
 
-
 .log-line {
-
     margin:
         5px 0;
-
 }
 
-
 .log-line.success {
-
     color:
         var(--accent);
 
@@ -1757,18 +1625,15 @@ section.visible {
 
 
 /* =========================================================
-   23. METRICS
+   26. METRICS
 ========================================================= */
 
 .metrics {
-
     margin-top:
         25px;
 }
 
-
 .metric-progress-wrapper {
-
     margin-bottom:
         18px;
 
@@ -1776,9 +1641,7 @@ section.visible {
         relative;
 }
 
-
 .metric-label {
-
     font-size:
         0.65rem;
 
@@ -1787,12 +1650,9 @@ section.visible {
 
     margin-bottom:
         5px;
-
 }
 
-
 .progress-track {
-
     background:
         rgba(255,255,255,0.05);
 
@@ -1801,12 +1661,9 @@ section.visible {
 
     overflow:
         hidden;
-
 }
 
-
 .progress-fill {
-
     background:
         linear-gradient(
             90deg,
@@ -1825,9 +1682,7 @@ section.visible {
         relative;
 }
 
-
 .progress-fill::after {
-
     content:
         "";
 
@@ -1856,9 +1711,7 @@ section.visible {
         blur(4px);
 }
 
-
 .metric-value {
-
     position:
         absolute;
 
@@ -1877,11 +1730,10 @@ section.visible {
 
 
 /* =========================================================
-   24. ABOUT
+   27. ABOUT
 ========================================================= */
 
 .about-grid {
-
     display:
         grid;
 
@@ -1892,9 +1744,7 @@ section.visible {
         70px;
 }
 
-
 .about-grid p {
-
     color:
         var(--text);
 
@@ -1908,17 +1758,13 @@ section.visible {
         1.9;
 }
 
-
 .facts {
-
     border-top:
         1px solid
         var(--line);
 }
 
-
 .fact {
-
     padding:
         18px 12px;
 
@@ -1931,12 +1777,9 @@ section.visible {
 
     margin-bottom:
         4px;
-
 }
 
-
 .fact span {
-
     color:
         var(--muted);
 
@@ -1948,12 +1791,9 @@ section.visible {
 
     margin-bottom:
         4px;
-
 }
 
-
 .fact strong {
-
     display:
         block;
 
@@ -1962,16 +1802,14 @@ section.visible {
 
     color:
         var(--accent);
-
 }
 
 
 /* =========================================================
-   25. RESEARCH TAGS
+   28. RESEARCH
 ========================================================= */
 
 .tag-grid {
-
     display:
         grid;
 
@@ -1982,9 +1820,7 @@ section.visible {
         15px;
 }
 
-
 .tag-grid div {
-
     padding:
         20px;
 
@@ -2004,12 +1840,9 @@ section.visible {
 
     transition:
         0.3s ease;
-
 }
 
-
 .tag-grid div:hover {
-
     background:
         var(--surface-2);
 
@@ -2018,12 +1851,9 @@ section.visible {
 
     transform:
         translateX(5px);
-
 }
 
-
 .tag-number {
-
     color:
         var(--accent);
 
@@ -2036,11 +1866,10 @@ section.visible {
 
 
 /* =========================================================
-   26. PROJECT GRID
+   29. PROJECTS
 ========================================================= */
 
 .project-grid {
-
     display:
         grid;
 
@@ -2051,9 +1880,7 @@ section.visible {
         20px;
 }
 
-
 .card {
-
     padding:
         30px;
 
@@ -2073,12 +1900,9 @@ section.visible {
         transform 0.2s ease,
         background 0.3s ease,
         border-color 0.3s ease;
-
 }
 
-
 .card::before {
-
     content:
         "";
 
@@ -2103,12 +1927,9 @@ section.visible {
     box-shadow:
         0 0 12px
         var(--accent);
-
 }
 
-
 .card::after {
-
     content:
         "";
 
@@ -2129,12 +1950,9 @@ section.visible {
 
     background:
         var(--accent);
-
 }
 
-
 .card:hover {
-
     background:
         var(--surface-2);
 
@@ -2144,12 +1962,9 @@ section.visible {
     box-shadow:
         0 15px 40px
         rgba(0, 243, 255, 0.08);
-
 }
 
-
 .number {
-
     color:
         var(--accent);
 
@@ -2158,12 +1973,9 @@ section.visible {
 
     margin-bottom:
         20px;
-
 }
 
-
 .card-icon {
-
     width:
         45px;
 
@@ -2194,9 +2006,7 @@ section.visible {
         rgba(0, 243, 255, 0.04);
 }
 
-
 .card h3 {
-
     color:
         #fff;
 
@@ -2205,12 +2015,9 @@ section.visible {
 
     margin-bottom:
         15px;
-
 }
 
-
 .card p {
-
     color:
         var(--muted);
 
@@ -2222,12 +2029,9 @@ section.visible {
 
     margin-bottom:
         20px;
-
 }
 
-
 .card a {
-
     color:
         var(--accent);
 
@@ -2236,24 +2040,19 @@ section.visible {
 
     margin-top:
         auto;
-
 }
 
 
 /* =========================================================
-   27. PUBLICATION
+   30. PUBLICATIONS
 ========================================================= */
 
 .publication-card {
-
     padding:
         35px;
-
 }
 
-
 .publication-topline {
-
     display:
         flex;
 
@@ -2283,17 +2082,12 @@ section.visible {
         25px;
 }
 
-
 .publication-type {
-
     color:
         var(--accent);
-
 }
 
-
 .publication-card h3 {
-
     color:
         #fff;
 
@@ -2305,12 +2099,9 @@ section.visible {
 
     margin-bottom:
         20px;
-
 }
 
-
 .authors {
-
     color:
         var(--text);
 
@@ -2319,32 +2110,23 @@ section.visible {
 
     margin-bottom:
         10px;
-
 }
-
 
 .authors strong,
 .journal strong {
-
     color:
         var(--accent);
-
 }
 
-
 .journal {
-
     color:
         var(--muted);
 
     font-size:
         0.75rem;
-
 }
 
-
 .publication-details {
-
     display:
         grid;
 
@@ -2363,12 +2145,9 @@ section.visible {
     border-top:
         1px dashed
         var(--line);
-
 }
 
-
 .publication-details div {
-
     display:
         flex;
 
@@ -2377,46 +2156,35 @@ section.visible {
 
     gap:
         5px;
-
 }
 
-
 .publication-details span {
-
     color:
         var(--muted);
 
     font-size:
         0.6rem;
-
 }
 
-
 .publication-details strong {
-
     color:
         var(--accent);
 
     font-size:
         0.75rem;
-
 }
 
-
 .publication-actions {
-
     margin-top:
         30px;
-
 }
 
 
 /* =========================================================
-   28. EXTERNAL LINKS
+   31. EXTERNAL LINKS
 ========================================================= */
 
 .link-grid {
-
     display:
         grid;
 
@@ -2425,12 +2193,9 @@ section.visible {
 
     gap:
         18px;
-
 }
 
-
 .external-link {
-
     padding:
         25px;
 
@@ -2445,34 +2210,25 @@ section.visible {
 
     min-height:
         120px;
-
 }
 
-
 .external-link span {
-
     color:
         #fff;
 
     font-size:
         1.1rem;
-
 }
 
-
 .external-link small {
-
     color:
         var(--muted);
 
     font-size:
         0.65rem;
-
 }
 
-
 .external-link b {
-
     color:
         var(--accent);
 
@@ -2481,27 +2237,22 @@ section.visible {
 
     align-self:
         flex-end;
-
 }
 
-
 .external-link:hover {
-
     border-color:
         var(--accent);
 
     background:
         var(--surface-2);
-
 }
 
 
 /* =========================================================
-   29. FOOTER
+   32. FOOTER
 ========================================================= */
 
 footer {
-
     width:
         min(1180px, 86vw);
 
@@ -2528,23 +2279,17 @@ footer {
 
     font-size:
         0.65rem;
-
 }
 
-
 .footer-status {
-
     color:
         var(--accent);
 
     margin-top:
         5px;
-
 }
 
-
 .footer-links {
-
     display:
         flex;
 
@@ -2553,31 +2298,24 @@ footer {
 
     flex-wrap:
         wrap;
-
 }
 
-
 .footer-links a:hover {
-
     color:
         var(--accent);
-
 }
 
 
 /* =========================================================
-   30. CORE OFF MODE
+   33. SECURE CORE STANDBY
 ========================================================= */
 
 .core-off .background-grid {
-
     opacity:
         0.3;
 }
 
-
 .core-off .pulse-dot {
-
     animation:
         none;
 
@@ -2585,33 +2323,22 @@ footer {
         0.4;
 }
 
-
 .core-off .hud-circle {
-
     animation-play-state:
         paused;
-
 }
-
 
 .core-off .orbit {
-
     animation-play-state:
         paused;
-
 }
-
 
 .core-off .helix-strand {
-
     animation-play-state:
         paused;
-
 }
 
-
 .core-off .holo-readout {
-
     animation:
         none;
 
@@ -2621,144 +2348,104 @@ footer {
 
 
 /* =========================================================
-   31. RESPONSIVE TABLET
+   34. TABLET
 ========================================================= */
 
 @media (max-width: 900px) {
 
     .hero {
-
         padding:
             0 5vw 2rem;
-
     }
-
 
     .links {
-
         gap:
             14px;
-
     }
 
-
     .hero-layout {
-
         grid-template-columns:
             1fr;
 
         padding-top:
             6vh;
-
     }
 
-
     .hero-hud {
-
         height:
             330px;
 
         order:
             -1;
-
     }
 
-
     .hud-circle {
-
         width:
             260px;
 
         height:
             260px;
-
     }
-
 
     .orbit-1,
     .orbit-2 {
-
         width:
             310px;
-
     }
-
 
     .jarvis-split-layout {
-
         grid-template-columns:
             1fr;
-
     }
 
-
     .about-grid {
-
         grid-template-columns:
             1fr;
 
         gap:
             40px;
-
     }
-
 
     .project-grid {
-
         grid-template-columns:
             1fr;
-
     }
-
 
     .link-grid {
-
         grid-template-columns:
             1fr;
-
     }
-
 }
 
 
 /* =========================================================
-   32. MOBILE
+   35. MOBILE
 ========================================================= */
 
 @media (max-width: 600px) {
 
     body {
-
         letter-spacing:
             0.025em;
-
     }
 
-
     .hero {
-
         min-height:
             auto;
 
         padding:
             0 20px 35px;
-
     }
 
-
     .nav {
-
         flex-wrap:
             wrap;
 
         gap:
             15px;
-
     }
 
-
     .links {
-
         order:
             3;
 
@@ -2773,72 +2460,51 @@ footer {
 
         gap:
             18px;
-
     }
 
-
     .links a {
-
         white-space:
             nowrap;
 
         font-size:
             0.7rem;
-
     }
 
-
     .theme-toggle {
-
         font-size:
             0.6rem;
 
         padding:
             7px 10px;
-
     }
-
 
     .hero-layout {
-
         padding-top:
             40px;
-
     }
-
 
     .hero-hud {
-
         height:
             280px;
-
     }
-
 
     .hud-circle {
-
         width:
             210px;
 
         height:
             210px;
-
     }
-
 
     .hud-circle-inner {
-
         width:
             140px;
 
         height:
             140px;
-
     }
 
-
     .hud-core {
-
         width:
             75px;
 
@@ -2847,143 +2513,98 @@ footer {
 
         font-size:
             1.1rem;
-
     }
-
 
     .orbit-1,
     .orbit-2 {
-
         width:
             250px;
 
         height:
             90px;
-
     }
 
-
     .orbit-3 {
-
         width:
             220px;
 
         height:
             220px;
-
     }
-
 
     .hud-data {
-
         display:
             none;
-
     }
-
 
     h1 {
-
         font-size:
             clamp(3rem, 18vw, 5rem);
-
     }
-
 
     .intro {
-
         font-size:
             0.85rem;
-
     }
-
 
     .buttons {
-
         flex-direction:
             column;
-
     }
 
-
     .button {
-
         width:
             100%;
 
         text-align:
             center;
-
     }
-
 
     .hero-meta {
-
         gap:
             10px;
-
     }
 
-
     .hero-meta span {
-
         padding:
             8px 12px 0 0;
 
         font-size:
             0.6rem;
-
     }
-
 
     main {
-
         width:
             calc(100% - 40px);
-
     }
-
 
     section {
-
         padding:
             70px 0;
-
     }
 
-
     .section-heading {
-
         grid-template-columns:
             40px 1fr;
 
         margin-bottom:
             30px;
-
     }
-
 
     .section-heading h2 {
-
         font-size:
             1.5rem;
-
     }
 
-
     .jarvis-core-analytics {
-
         padding:
             20px;
 
         margin:
             35px 0;
-
     }
 
-
     .core-header {
-
         align-items:
             flex-start;
 
@@ -2992,128 +2613,150 @@ footer {
 
         gap:
             12px;
-
     }
-
 
     .core-title {
-
         font-size:
             0.65rem;
-
     }
-
 
     .hologram-viewport {
-
         height:
             270px;
-
     }
-
 
     .outer-layer {
-
         width:
             220px;
 
         height:
             220px;
-
     }
-
 
     .mid-layer {
-
         width:
             160px;
 
         height:
             160px;
-
     }
-
 
     .inner-layer {
-
         width:
             110px;
 
         height:
             110px;
-
     }
-
 
     .dna-helix-simulation {
-
         gap:
             8px;
-
     }
 
-
     .helix-strand {
-
         width:
             4px;
 
         height:
             55px;
-
     }
-
 
     .tag-grid {
-
         grid-template-columns:
             1fr;
-
     }
 
-
     .card {
-
         min-height:
             280px;
 
         padding:
             25px;
-
     }
-
 
     .publication-card {
-
         padding:
             22px;
-
     }
-
 
     .publication-details {
-
         grid-template-columns:
             1fr;
-
     }
 
-
     footer {
-
         width:
             calc(100% - 40px);
 
         flex-direction:
             column;
-
     }
-
 }
 
 
 /* =========================================================
-   33. REDUCED MOTION
+   36. VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .logo {
+        width:
+            42px;
+
+        height:
+            42px;
+    }
+
+    .theme-toggle {
+        font-size:
+            0.55rem;
+    }
+
+    .eyebrow {
+        font-size:
+            0.62rem;
+    }
+
+    h1 {
+        font-size:
+            2.8rem;
+    }
+
+    .hologram-viewport {
+        height:
+            240px;
+    }
+
+    .outer-layer {
+        width:
+            190px;
+
+        height:
+            190px;
+    }
+
+    .mid-layer {
+        width:
+            140px;
+
+        height:
+            140px;
+    }
+
+    .inner-layer {
+        width:
+            95px;
+
+        height:
+            95px;
+    }
+}
+
+
+/* =========================================================
+   37. REDUCED MOTION
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -3133,7 +2776,5 @@ footer {
 
         transition-duration:
             0.01ms !important;
-
     }
-
 }
