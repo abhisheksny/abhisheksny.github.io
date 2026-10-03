@@ -44,7 +44,6 @@ Computational structural-biology workflows involving molecular docking, GROMACS 
 
 **Asian Pacific Journal of Tropical Biomedicine, 2026.**
 
-* Joint first author
 
 ## Academic Profiles
 
