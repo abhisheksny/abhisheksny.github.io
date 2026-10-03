@@ -1,6 +1,6 @@
 const CFG = {
   particlesDesktop: 42000, particlesLowEnd: 24000, particlesMobile: 12000,
-  bloom: 0.85, bloomRadius: 0.6,
+  bloom: 0.55, bloomRadius: 0.4,
   spring: 5.0, damping: 3.2,
   fieldRadius: 2.7, fieldPush: 55, fieldSwirl: 0.35,
   rotateSpeed: 0.12,
@@ -79,7 +79,7 @@ async function initHero() {
   const composer = new EffectComposer(renderer);
   composer.setPixelRatio(dpr);
   composer.addPass(new RenderPass(scene, camera));
-  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), CFG.bloom, CFG.bloomRadius, 0.0);
+  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), CFG.bloom, CFG.bloomRadius, 0.12);
   composer.addPass(bloom);
   composer.addPass(new OutputPass());
 
@@ -235,9 +235,9 @@ async function initHero() {
     scrollP = clamp(scrollY / (innerHeight * 0.9), 0, 1);
     page = clamp(scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight), 0, 1);
     hero.style.setProperty("--p", scrollP.toFixed(3));
-    canvas.style.opacity = String(1 - scrollP * 0.4);
+    canvas.style.opacity = String(1 - scrollP * 0.1);
     camera.position.z = 20 + scrollP * 4;
-    material.uniforms.uDim.value = 1 - scrollP * 0.55;
+    material.uniforms.uDim.value = 1 - scrollP * 0.2;
     netAmt = smooth(clamp((scrollY / innerHeight - 0.35) / 0.9, 0, 1));
     if (navEl) navEl.classList.toggle("scrolled", scrollY > 40);
   }
@@ -357,3 +357,25 @@ async function initHero() {
 
 const boot = () => initHero().catch(err => { document.body.classList.add("no-webgl"); console.warn(err); });
 document.readyState === "complete" ? boot() : addEventListener("load", boot, { once: true });
+
+/* ---------- Light / night toggle ---------- */
+(function () {
+  const root = document.documentElement, nav = document.querySelector(".nav");
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const get = () => { try { return localStorage.getItem("theme"); } catch { return null; } };
+  const put = v => { try { localStorage.setItem("theme", v); } catch {} };
+  const btn = document.createElement("button");
+  btn.className = "theme-toggle"; btn.type = "button";
+  function apply(t) {
+    root.dataset.theme = t;
+    btn.textContent = t === "light" ? "☾ Night" : "☀ Light";
+    btn.setAttribute("aria-label", t === "light" ? "Switch to night mode" : "Switch to light mode");
+    if (meta) meta.content = t === "light" ? "#f6f1ea" : "#050403";
+  }
+  apply(get() === "light" ? "light" : "dark");
+  btn.addEventListener("click", () => {
+    const n = root.dataset.theme === "light" ? "dark" : "light";
+    apply(n); put(n);
+  });
+  if (nav) nav.appendChild(btn);
+})();
